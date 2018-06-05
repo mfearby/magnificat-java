@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0" minWidth="0"
+            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.marcfearby.components.PlainTabController">
+   <center>
+       <SplitPane dividerPositions="0.25" BorderPane.alignment="CENTER">
+           <items>
+               <fx:include fx:id="tree" source="../widgets/FolderTreeView.fxml" />
+              <TableView BorderPane.alignment="CENTER">
+                <columns>
+                  <TableColumn prefWidth="75.0" text="C1" />
+                  <TableColumn prefWidth="75.0" text="C2" />
+                </columns>
+              </TableView>
+           </items>
+       </SplitPane>
+   </center>
+</BorderPane>

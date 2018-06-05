@@ -1,0 +1,1 @@
+Icons are public domain and were sourced from: http://tango.freedesktop.org/Tango_Icon_Library
