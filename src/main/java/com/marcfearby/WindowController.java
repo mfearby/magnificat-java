@@ -29,7 +29,6 @@ public class WindowController implements Initializable {
 
 
     public void addTab(File path) {
-        System.out.println("WindowController.addTab(\"" + path.getAbsolutePath() + "\")");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/components/PlainTabView.fxml"));
             Parent root = loader.load();
@@ -52,5 +51,6 @@ public class WindowController implements Initializable {
             e.printStackTrace();
         }
     }
+
 
 }

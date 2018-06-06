@@ -1,6 +1,6 @@
 package com.marcfearby.widgets;
 
-import com.marcfearby.WindowController;
+import com.marcfearby.components.PlainTabController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -20,7 +20,7 @@ import java.io.File;
 public class FolderTreeController {
 
     @FXML private TreeView<File> tree;
-    private WindowController window;
+    private PlainTabController tab;
     private final Image closedImage = new Image(getClass().getResourceAsStream("/icons/tango/folder.png"));
     private final Image openImage = new Image(getClass().getResourceAsStream("/icons/tango/folder-open.png"));
     private final Image refreshImage = new Image(getClass().getResourceAsStream("/icons/tango/view-refresh.png"));
@@ -32,14 +32,13 @@ public class FolderTreeController {
     }
 
 
-    public void init(WindowController window, File path) {
-        System.out.println("FolderTreeController.init()");
-        this.window = window;
-        setupTree(path);
+    public void init(PlainTabController tab, File directory) {
+        this.tab = tab;
+        setupTree(directory);
     }
 
 
-    private void setupTree(File treeRootPath) {
+    private void setupTree(File directory) {
         tree.setCellFactory(param -> new TreeCell<File>() {
             @Override
             public void updateItem(File item, boolean empty) {
@@ -72,12 +71,12 @@ public class FolderTreeController {
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         File item = newValue.getValue();
-                        System.out.println("Selected node: " + item.getName());
+                        selectFolder(item);
                     }
                 });
 
         try {
-            FileTreeItem<File> root = new FileTreeItem<>(treeRootPath);
+            FileTreeItem<File> root = new FileTreeItem<>(directory);
             tree.setRoot(root);
             root.setExpanded(true);
         } catch (Exception e) {
@@ -87,7 +86,12 @@ public class FolderTreeController {
 
 
     private void addTab(File path) {
-        window.addTab(path);
+        tab.addTab(path);
+    }
+
+
+    private void selectFolder(File directory) {
+        tab.selectFolder(directory);
     }
 
 }

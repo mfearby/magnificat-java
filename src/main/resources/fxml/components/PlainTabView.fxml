@@ -12,12 +12,7 @@
        <SplitPane dividerPositions="0.25" BorderPane.alignment="CENTER">
            <items>
                <fx:include fx:id="tree" source="../widgets/FolderTreeView.fxml" />
-              <TableView BorderPane.alignment="CENTER">
-                <columns>
-                  <TableColumn prefWidth="75.0" text="C1" />
-                  <TableColumn prefWidth="75.0" text="C2" />
-                </columns>
-              </TableView>
+               <fx:include BorderPane.alignment="CENTER" fx:id="table" source="../widgets/FilesTableView.fxml" />
            </items>
        </SplitPane>
    </center>
