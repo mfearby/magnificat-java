@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/window.fxml"));
         primaryStage.setTitle("Magnificat");
         primaryStage.setScene(new Scene(root, 1024, 768));

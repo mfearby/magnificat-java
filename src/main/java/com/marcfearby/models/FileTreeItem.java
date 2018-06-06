@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * This class extends TreeItem so that the child nodes can be populated dynamically as needed
@@ -11,7 +12,7 @@ import java.io.File;
  * @author Marc Fearby
  * @see <a href="https://docs.oracle.com/javafx/2/api/javafx/scene/control/TreeItem.html">TreeItem</a>
  */
-public class FileTreeItem<T> extends TreeItem<File> {
+public class FileTreeItem<T> extends TreeItem<File> implements Comparable<FileTreeItem> {
 
     // We cache whether the File is a leaf or not. A File is a leaf if
     // it is not a directory and does not have any files contained within
@@ -28,18 +29,25 @@ public class FileTreeItem<T> extends TreeItem<File> {
     private boolean isFirstTimeChildren = true;
     private boolean isFirstTimeLeaf = true;
 
+
     public FileTreeItem(File file) {
         super(file);
     }
+
 
     @Override public ObservableList<TreeItem<File>> getChildren() {
         if (isFirstTimeChildren) {
             isFirstTimeChildren = false;
             // First getChildren() call, so we actually go off and
             // determine the children of the File contained in this TreeItem.
-            super.getChildren().setAll(buildChildren(this));
+            refresh();
         }
         return super.getChildren();
+    }
+
+
+    public void refresh() {
+        super.getChildren().setAll(buildChildren(this));
     }
 
 
@@ -52,12 +60,14 @@ public class FileTreeItem<T> extends TreeItem<File> {
         return isLeaf;
     }
 
+
     private ObservableList<TreeItem<File>> buildChildren(TreeItem<File> TreeItem) {
         File f = TreeItem.getValue();
 
         if (f.isDirectory()) {
             File[] files = f.listFiles();
             if (files != null) {
+                Arrays.sort(files);
                 ObservableList<TreeItem<File>> children = FXCollections.observableArrayList();
 
                 for (File child : files) {
@@ -74,6 +84,7 @@ public class FileTreeItem<T> extends TreeItem<File> {
         return FXCollections.emptyObservableList();
     }
 
+
     private boolean hasSubFolders(File dir) {
         boolean answer = false;
         if (dir.isDirectory()) {
@@ -88,6 +99,13 @@ public class FileTreeItem<T> extends TreeItem<File> {
             }
         }
         return answer;
+    }
+
+
+    @Override
+    public int compareTo(FileTreeItem file) {
+        File f = (File)file.getValue();
+        return this.getValue().getName().compareTo(f.getName());
     }
 
 }

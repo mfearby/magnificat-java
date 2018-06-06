@@ -1,14 +1,12 @@
 package com.marcfearby.components;
 
+import com.marcfearby.WindowController;
 import com.marcfearby.widgets.FolderTreeController;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.TreeView;
+import java.io.File;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class PlainTabController implements Initializable {
+public class PlainTabController {
 
     @FXML private TreeView tree;
     @FXML private FolderTreeController treeController;
@@ -18,16 +16,10 @@ public class PlainTabController implements Initializable {
 
     }
 
-    // This won't be called if the class implements Initializable
-    public void initialize() {
-        System.out.println("PlainTabController.initialize()");
+
+    public void init(WindowController window, File path) {
+        System.out.println("PlainTabController.init()");
+        treeController.init(window, path);
     }
-
-    // This method (with params) will only be called if the class implements Initializable
-    public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("PlainTabController.initialize(location, resources)");
-    }
-
-
 
 }
