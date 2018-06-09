@@ -61,6 +61,7 @@ public class Settings {
         try {
             // http://ini4j.sourceforge.net/index.html
             Wini ini = new Wini(settingsFile);
+            ini.clear();
 
             for (int i = 0; i < tabControllers.size(); i++) {
                 TabInfo info = tabControllers.get(i).getTabInfo();
@@ -75,7 +76,6 @@ public class Settings {
         } catch (Exception e) {
             System.out.println("Settings.saveTabs() - Exception: " + e.getMessage());
         }
-
     }
 
 
