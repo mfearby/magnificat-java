@@ -9,16 +9,18 @@ import javafx.scene.control.TreeView;
 import com.marcfearby.models.FileTreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.DirectoryChooser;
+
 import java.io.File;
 
 /**
  * Controller for the folder tree browser
  *
  * @author Marc Fearby
- * @see <a href="https://docs.oracle.com/javafx/2/ui_controls/tree-view.htm">Using JavaFX UI Controls - 13 Tree View</a>
  */
 public class FolderTreeController {
 
+    // https://docs.oracle.com/javafx/2/ui_controls/tree-view.htm
     @FXML private TreeView<File> tree;
     private PlainTabController tab;
     private final Image closedImage = new Image(getClass().getResourceAsStream("/icons/tango/folder.png"));
@@ -50,6 +52,7 @@ public class FolderTreeController {
 
                 } else {
                     setText(item.getName());
+
                     Image img = this.getTreeItem().isExpanded() ? openImage : closedImage;
                     ImageView imageView = new ImageView(img);
                     setGraphic(imageView);
@@ -59,9 +62,24 @@ public class FolderTreeController {
                         FileTreeItem fi = (FileTreeItem)getTreeItem();
                         fi.refresh();
                     });
+
                     MenuItem o = new MenuItem("Open in new tab", new ImageView(newTabImage));
-                    o.setOnAction(event -> addTab(item) );
-                    setContextMenu(new ContextMenu(m, o));
+                    o.setOnAction(event -> addTab(item));
+
+                    if (item == tree.getRoot().getValue()) {
+                        MenuItem f = new MenuItem("Select folder...", new ImageView(openImage));
+                        f.setOnAction(event -> {
+                            DirectoryChooser chooser = new DirectoryChooser();
+                            File selectedDir = chooser.showDialog(tree.getScene().getWindow());
+                            if (selectedDir != null) {
+                                setRoot(selectedDir);
+                            }
+                        });
+                        setContextMenu(new ContextMenu(m, o, f));
+                    } else {
+                        setContextMenu(new ContextMenu(m, o));
+                    }
+
                 }
             }
         });
@@ -75,10 +93,16 @@ public class FolderTreeController {
                     }
                 });
 
+        setRoot(directory);
+    }
+
+
+    private void setRoot(File directory) {
         try {
             FileTreeItem<File> root = new FileTreeItem<>(directory);
             tree.setRoot(root);
             root.setExpanded(true);
+            tree.getSelectionModel().selectFirst();
         } catch (Exception e) {
             e.printStackTrace();
         }
