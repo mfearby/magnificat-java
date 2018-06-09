@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0" minWidth="0"
-            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.marcfearby.components.PlainTabController">
-   <center>
-       <SplitPane dividerPositions="0.25" BorderPane.alignment="CENTER">
-           <items>
-               <fx:include fx:id="tree" source="../widgets/FolderTreeView.fxml" />
-               <fx:include BorderPane.alignment="CENTER" fx:id="table" source="../widgets/FilesTableView.fxml" />
-           </items>
-       </SplitPane>
-   </center>
-</BorderPane>
+<Tab fx:id="tab" onSelectionChanged="#onSelectionChanged" text="Untitled Tab" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.marcfearby.components.PlainTabController">
+  <content>
+      <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0" minWidth="0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+          <center>
+              <SplitPane dividerPositions="0.25" BorderPane.alignment="CENTER">
+                  <items>
+                      <fx:include fx:id="tree" source="../widgets/FolderTreeView.fxml" />
+                      <fx:include fx:id="table" source="../widgets/FilesTableView.fxml" BorderPane.alignment="CENTER" />
+                  </items>
+              </SplitPane>
+          </center>
+      </BorderPane>
+  </content>
+</Tab>

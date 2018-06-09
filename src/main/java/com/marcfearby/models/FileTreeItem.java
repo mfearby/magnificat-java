@@ -10,9 +10,10 @@ import java.util.Arrays;
  * This class extends TreeItem so that the child nodes can be populated dynamically as needed
  *
  * @author Marc Fearby
- * @see <a href="https://docs.oracle.com/javafx/2/api/javafx/scene/control/TreeItem.html">TreeItem</a>
  */
 public class FileTreeItem<T> extends TreeItem<File> implements Comparable<FileTreeItem> {
+
+    // https://docs.oracle.com/javafx/2/api/javafx/scene/control/TreeItem.html
 
     // We cache whether the File is a leaf or not. A File is a leaf if
     // it is not a directory and does not have any files contained within

@@ -7,9 +7,9 @@
            minWidth="0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.marcfearby.widgets.FilesTableController">
   <columns>
-      <TableColumn fx:id="colName" minWidth="100.0" prefWidth="300.0" text="Name" />
+      <TableColumn fx:id="colName" minWidth="100.0" prefWidth="400.0" text="Name" />
       <TableColumn fx:id="colSize" minWidth="60.0" prefWidth="90.0" text="Size" />
-      <TableColumn fx:id="colType" minWidth="80.0" prefWidth="100.0" text="Type" />
       <TableColumn fx:id="colModified" minWidth="100.0" prefWidth="150.0" text="Modified" />
+      <TableColumn fx:id="colType" minWidth="50.0" prefWidth="70.0" text="Type" />
   </columns>
 </TableView>

@@ -1,56 +1,92 @@
 package com.marcfearby;
 
+import com.marcfearby.Utils.Settings;
 import com.marcfearby.components.PlainTabController;
+import com.marcfearby.components.TabController;
+import com.marcfearby.models.TabInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class WindowController implements Initializable {
 
     @FXML private TabPane tabs;
 
+    private ArrayList<TabController> tabControllers;
+
 
     public WindowController() {
-
+        tabControllers = new ArrayList<>();
     }
 
 
     public void initialize(URL location, ResourceBundle resources) {
-        File home = new File(System.getProperty("user.home"));
-        addTab(home);
+        ArrayList<TabInfo> tabs = Settings.getTabs();
+
+        // Restore the user's previous tabs
+        if (tabs.size() > 0) {
+            for (TabInfo info : tabs) {
+                addTab(info);
+            }
+        } else {
+            // This is the first run or the settings file failed to load
+            File home = new File(System.getProperty("user.home"));
+            addTab(home);
+        }
+
+        // Set this to true so that settings can be saved from now on
+        Settings.appLoaded = true;
+    }
+
+
+    private void addTab(TabInfo info) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/components/PlainTabView.fxml"));
+            Tab tab = loader.load();
+            tab.setText(info.getRoot().getName());
+
+            PlainTabController ctrl = loader.getController();
+            tabControllers.add(ctrl);
+            ctrl.init(this, info);
+
+            tab.setOnCloseRequest(event -> {
+                // Don't allow the last tab to be closed
+                if (tabs.getTabs().size() == 1) {
+                    event.consume();
+                } else {
+                    tabControllers.remove(ctrl);
+                    saveTabInfo();
+                }
+            });
+
+            tabs.getTabs().add(tab);
+
+            if (info.getActive())
+                tabs.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            System.out.println("WindowController.addTab() - Exception: " + e.getMessage());
+        }
     }
 
 
     public void addTab(File path) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/components/PlainTabView.fxml"));
-            Parent root = loader.load();
-            PlainTabController ctrl = loader.getController();
-            ctrl.init(this, path);
-
-            Tab tab = new Tab(path.getName());
-            tab.setClosable(true);
-            tab.setContent(root);
-
-            tab.setOnCloseRequest(event -> {
-                // Don't allow the last tab to be closed
-                if (tabs.getTabs().size() == 1)
-                    event.consume();
-            });
-
-            tabs.getTabs().add(tab);
-            tabs.getSelectionModel().select(tab);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        TabInfo info = new TabInfo(TabInfo.TabType.PLAIN, path, true);
+        addTab(info);
     }
+
+
+    public void saveTabInfo() {
+        Settings.saveTabs(tabControllers);
+    }
+
+
+
 
 
 }
