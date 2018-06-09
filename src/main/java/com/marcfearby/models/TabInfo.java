@@ -24,6 +24,10 @@ public class TabInfo {
         return root;
     }
 
+    public void setRoot(File root) {
+        this.root = root;
+    }
+
     public boolean getActive() {
         return active;
     }

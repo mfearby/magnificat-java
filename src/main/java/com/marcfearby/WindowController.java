@@ -49,9 +49,8 @@ public class WindowController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/components/PlainTabView.fxml"));
             Tab tab = loader.load();
-            tab.setText(info.getRoot().getName());
-
             PlainTabController ctrl = loader.getController();
+
             tabControllers.add(ctrl);
             ctrl.init(this, info);
 
@@ -69,6 +68,7 @@ public class WindowController implements Initializable {
 
             if (info.getActive())
                 tabs.getSelectionModel().select(tab);
+
         } catch (Exception e) {
             System.out.println("WindowController.addTab() - Exception: " + e.getMessage());
         }

@@ -29,7 +29,7 @@ public class PlainTabController extends TabController {
         info.setActive(tab.isSelected());
         // Save the tabs only for the active tab (the deactivated tab's event will be called before this one)
         if (tab.isSelected())
-            window.saveTabInfo();
+            saveTabInfo();
     }
 
 
@@ -38,6 +38,8 @@ public class PlainTabController extends TabController {
         this.info = info;
         treeController.init(this, info.getRoot());
         tableController.init(this, info.getRoot());
+
+        tab.setText(getTabTitle());
     }
 
 
@@ -53,6 +55,22 @@ public class PlainTabController extends TabController {
 
     public TabInfo getTabInfo() {
         return info;
+    }
+
+
+    public String getTabTitle() {
+        return info.getRoot().getName();
+    }
+
+
+    private void saveTabInfo() {
+        window.saveTabInfo();
+    }
+
+
+    public void setRoot(File root) {
+        info.setRoot(root);
+        saveTabInfo();
     }
 
 }
