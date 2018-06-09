@@ -24,6 +24,7 @@ public class FilesTableController implements Initializable {
     @FXML private TableColumn<File, String> colName;
     @FXML private TableColumn<File, String> colSize;
     @FXML private TableColumn<File, String> colModified;
+    @FXML private TableColumn<File, String> colType;
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
@@ -47,6 +48,12 @@ public class FilesTableController implements Initializable {
             DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, currentLocale);
             Date d = new Date(param.getValue().lastModified());
             return new SimpleStringProperty(formatter.format(d));
+        });
+        colType.setCellValueFactory((TableColumn.CellDataFeatures<File, String> param) -> {
+            String ext = "";
+            int i = param.getValue().getName().lastIndexOf('.');
+            if (i > 0) ext = param.getValue().getName().substring(i + 1);
+            return new SimpleStringProperty(ext.toUpperCase());
         });
     }
 
