@@ -12,7 +12,9 @@ import javafx.scene.control.TabPane;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class WindowController implements Initializable {
 
@@ -82,7 +84,11 @@ public class WindowController implements Initializable {
 
 
     public void saveTabInfo() {
-        Settings.saveTabs(tabControllers);
+        List<TabInfo> tabs = tabControllers.stream()
+                .map(TabController::getTabInfo)
+                .collect(Collectors.toList());
+
+        Settings.saveTabs(tabs);
     }
 
 

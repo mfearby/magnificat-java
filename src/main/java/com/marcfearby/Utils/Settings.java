@@ -28,15 +28,23 @@ public class Settings {
 
 
     public static ArrayList<TabInfo> getTabs() {
+        File file = getOrCreateSettingsFile(TABS_INI);
+        String settings = readSettingsFile(file);
+        return getTabsFromSettings(settings);
+    }
+
+
+    public static ArrayList<TabInfo> getTabsFromSettings(String settings) {
         ArrayList<TabInfo> tabs = new ArrayList<>();
-        File settingsFile = getOrCreateSettingsFile(TABS_INI);
 
         try {
             // http://ini4j.sourceforge.net/index.html
-            Wini ini = new Wini(settingsFile);
+            StringReader sr = new StringReader(settings);
+            Wini ini = new Wini(sr);
 
             for (String section : ini.keySet()) {
                 File file = new File(ini.get(section, KEY_PATH));
+                // Allow a tab to be resurrected only if its root directory still exists
                 if (file.exists()) {
                     TabInfo.TabType type = TabInfo.TabType.valueOf(ini.get(section, KEY_TYPE));
                     boolean active = Boolean.parseBoolean(ini.get(section, KEY_ACTIVE));
@@ -49,10 +57,11 @@ public class Settings {
         }
 
         return tabs;
+
     }
 
 
-    public static void saveTabs(List<TabController> tabControllers) {
+    public static void saveTabs(List<TabInfo> tabs) {
         // Don't save settings whilst the app is initialising (and triggering tab onSelectionChanged events)
         if (!appLoaded) return;
 
@@ -60,7 +69,7 @@ public class Settings {
         try {
 
             FileWriter fw = new FileWriter(settingsFile);
-            StringWriter sw = getNewSettings(tabControllers);
+            StringWriter sw = getNewSettings(tabs);
             fw.write(sw.toString());
             fw.close();
         } catch (Exception e) {
@@ -69,15 +78,15 @@ public class Settings {
     }
 
 
-    public static StringWriter getNewSettings(List<TabController> tabControllers) {
+    public static StringWriter getNewSettings(List<TabInfo> tabs) {
         StringWriter contents = new StringWriter();
 
         try {
             // http://ini4j.sourceforge.net/index.html
             Wini ini = new Wini();
 
-            for (int i = 0; i < tabControllers.size(); i++) {
-                TabInfo info = tabControllers.get(i).getTabInfo();
+            for (int i = 0; i < tabs.size(); i++) {
+                TabInfo info = tabs.get(i);
                 String section = "tab" + i;
                 ini.put(section, KEY_PATH, info.getRoot().getPath());
                 ini.put(section, KEY_TYPE, info.getType().name());
@@ -90,6 +99,27 @@ public class Settings {
         }
 
         return contents;
+    }
+
+
+    private static String readSettingsFile(File file)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file.getPath())))
+        {
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                sb.append(line).append("\n");
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.println("Settings.readSettingsFile() - Exception: " + e.getMessage());
+        }
+
+        return sb.toString();
     }
 
 
