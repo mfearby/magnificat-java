@@ -57,11 +57,24 @@ public class Settings {
         if (!appLoaded) return;
 
         File settingsFile = getOrCreateSettingsFile(TABS_INI);
+        try {
+
+            FileWriter fw = new FileWriter(settingsFile);
+            StringWriter sw = getNewSettings(tabControllers);
+            fw.write(sw.toString());
+            fw.close();
+        } catch (Exception e) {
+            System.out.println("Settings.saveTabs() - Exception: " + e.getMessage());
+        }
+    }
+
+
+    public static StringWriter getNewSettings(List<TabController> tabControllers) {
+        StringWriter contents = new StringWriter();
 
         try {
             // http://ini4j.sourceforge.net/index.html
-            Wini ini = new Wini(settingsFile);
-            ini.clear();
+            Wini ini = new Wini();
 
             for (int i = 0; i < tabControllers.size(); i++) {
                 TabInfo info = tabControllers.get(i).getTabInfo();
@@ -71,11 +84,12 @@ public class Settings {
                 ini.put(section, KEY_ACTIVE, info.getActive());
             }
 
-            ini.store();
-
+            ini.store(contents);
         } catch (Exception e) {
-            System.out.println("Settings.saveTabs() - Exception: " + e.getMessage());
+            System.out.println("Settings.getNewSettings() - Exception: " + e.getMessage());
         }
+
+        return contents;
     }
 
 
