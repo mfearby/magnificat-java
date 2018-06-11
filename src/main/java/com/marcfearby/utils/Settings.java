@@ -6,6 +6,8 @@ import net.harawata.appdirs.AppDirsFactory;
 import org.ini4j.Wini;
 
 import java.io.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,7 +45,9 @@ public class Settings {
             Wini ini = new Wini(sr);
 
             for (String section : ini.keySet()) {
-                Path file = Paths.get(ini.get(section, KEY_PATH));
+                FileSystem fs = Global.getFileSystem();
+                Path file = fs.getPath(ini.get(section, KEY_PATH));
+
                 // Allow a tab to be resurrected only if its root directory still exists
                 if (Files.exists(file)) {
                     TabInfo.TabType type = TabInfo.TabType.valueOf(ini.get(section, KEY_TYPE));

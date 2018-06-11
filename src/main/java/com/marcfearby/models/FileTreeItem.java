@@ -3,11 +3,8 @@ package com.marcfearby.models;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
-
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 
 /**
  * This class extends TreeItem so that the child nodes can be populated dynamically as needed

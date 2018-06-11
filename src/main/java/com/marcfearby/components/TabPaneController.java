@@ -1,5 +1,6 @@
 package com.marcfearby.components;
 
+import com.marcfearby.utils.Global;
 import com.marcfearby.utils.Settings;
 import com.marcfearby.models.TabInfo;
 import javafx.fxml.FXML;
@@ -7,10 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -36,8 +35,8 @@ public class TabPaneController implements Initializable {
                 addTab(info);
             }
         } else {
-            // This is the first run or the settings file failed to load
-            Path home = Paths.get(System.getProperty("user.home"));
+            // Get the current home folder according to the file system in effect
+            Path home = Global.getUserHomeFolder();
             addTab(home);
         }
 
