@@ -1,6 +1,6 @@
 package com.marcfearby.components;
 
-import com.marcfearby.Utils.Settings;
+import com.marcfearby.utils.Settings;
 import com.marcfearby.models.TabInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,8 +8,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
-import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -36,7 +37,7 @@ public class TabPaneController implements Initializable {
             }
         } else {
             // This is the first run or the settings file failed to load
-            File home = new File(System.getProperty("user.home"));
+            Path home = Paths.get(System.getProperty("user.home"));
             addTab(home);
         }
 
@@ -75,7 +76,7 @@ public class TabPaneController implements Initializable {
     }
 
 
-    public void addTab(File path) {
+    public void addTab(Path path) {
         TabInfo info = new TabInfo(TabInfo.TabType.PLAIN, path, true);
         addTab(info);
     }
@@ -86,7 +87,7 @@ public class TabPaneController implements Initializable {
                 .map(TabController::getTabInfo)
                 .collect(Collectors.toList());
 
-            Settings.saveTabs(tabs);
+        Settings.saveTabs(tabs);
     }
 
 }

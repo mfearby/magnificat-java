@@ -7,7 +7,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TreeView;
-import java.io.File;
+import java.nio.file.Path;
 
 public class PlainTabController extends TabController {
 
@@ -42,12 +42,12 @@ public class PlainTabController extends TabController {
     }
 
 
-    public void selectFolder(File directory) {
+    public void selectFolder(Path directory) {
         tableController.selectFolder(directory);
     }
 
 
-    public void addTab(File path) {
+    public void addTab(Path path) {
         tabPane.addTab(path);
     }
 
@@ -58,7 +58,7 @@ public class PlainTabController extends TabController {
 
 
     public String getTabTitle() {
-        return info.getRoot().getName();
+        return info.getRoot().getFileName().toString();
     }
 
 
@@ -67,7 +67,7 @@ public class PlainTabController extends TabController {
     }
 
 
-    public void setRoot(File root) {
+    public void setRoot(Path root) {
         info.setRoot(root);
         saveTabInfo();
     }

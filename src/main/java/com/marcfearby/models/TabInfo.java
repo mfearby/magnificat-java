@@ -1,16 +1,16 @@
 package com.marcfearby.models;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public class TabInfo {
 
     public enum TabType { PLAIN, FANCY }
 
     private TabType type;
-    private File root;
+    private Path root;
     private boolean active;
 
-    public TabInfo(TabType type, File root, boolean active) {
+    public TabInfo(TabType type, Path root, boolean active) {
         this.type = type;
         this.root = root;
         this.active = active;
@@ -20,11 +20,11 @@ public class TabInfo {
         return type;
     }
 
-    public File getRoot() {
+    public Path getRoot() {
         return root;
     }
 
-    public void setRoot(File root) {
+    public void setRoot(Path root) {
         this.root = root;
     }
 

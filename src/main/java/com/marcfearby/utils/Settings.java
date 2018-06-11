@@ -1,4 +1,4 @@
-package com.marcfearby.Utils;
+package com.marcfearby.utils;
 
 import com.marcfearby.models.TabInfo;
 import net.harawata.appdirs.AppDirs;
@@ -6,6 +6,7 @@ import net.harawata.appdirs.AppDirsFactory;
 import org.ini4j.Wini;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class Settings {
 
 
     public static ArrayList<TabInfo> getTabs() {
-        File file = getOrCreateSettingsFile(TABS_INI);
+        Path file = getOrCreateSettingsFile(TABS_INI);
         String settings = readSettingsFile(file);
         return getTabsFromSettings(settings);
     }
@@ -42,9 +43,9 @@ public class Settings {
             Wini ini = new Wini(sr);
 
             for (String section : ini.keySet()) {
-                File file = new File(ini.get(section, KEY_PATH));
+                Path file = Paths.get(ini.get(section, KEY_PATH));
                 // Allow a tab to be resurrected only if its root directory still exists
-                if (file.exists()) {
+                if (Files.exists(file)) {
                     TabInfo.TabType type = TabInfo.TabType.valueOf(ini.get(section, KEY_TYPE));
                     boolean active = Boolean.parseBoolean(ini.get(section, KEY_ACTIVE));
                     TabInfo info = new TabInfo(type, file, active);
@@ -56,7 +57,6 @@ public class Settings {
         }
 
         return tabs;
-
     }
 
 
@@ -64,9 +64,9 @@ public class Settings {
         // Don't save settings whilst the app is initialising (and triggering tab onSelectionChanged events)
         if (!appLoaded) return;
 
-        File settingsFile = getOrCreateSettingsFile(TABS_INI);
+        Path settingsFile = getOrCreateSettingsFile(TABS_INI);
         try {
-            FileWriter fw = new FileWriter(settingsFile);
+            FileWriter fw = new FileWriter(settingsFile.toString());
             StringWriter sw = getNewSettings(tabs);
             fw.write(sw.toString());
             fw.close();
@@ -86,7 +86,7 @@ public class Settings {
             for (int i = 0; i < tabs.size(); i++) {
                 TabInfo info = tabs.get(i);
                 String section = "tab" + i;
-                ini.put(section, KEY_PATH, info.getRoot().getPath());
+                ini.put(section, KEY_PATH, info.getRoot());
                 ini.put(section, KEY_TYPE, info.getType().name());
                 ini.put(section, KEY_ACTIVE, info.getActive());
             }
@@ -100,11 +100,11 @@ public class Settings {
     }
 
 
-    private static String readSettingsFile(File file)
+    private static String readSettingsFile(Path file)
     {
         StringBuilder sb = new StringBuilder();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file.getPath())))
+        try (BufferedReader br = new BufferedReader(new FileReader(file.toString())))
         {
             String line;
             while ((line = br.readLine()) != null)
@@ -121,18 +121,18 @@ public class Settings {
     }
 
 
-    private static File getOrCreateSettingsFile(String iniFileName) {
+    private static Path getOrCreateSettingsFile(String iniFileName) {
         String filePath = getSettingsFilePath(iniFileName);
-        File f = new File(filePath);
+        Path p = Paths.get(filePath);
         try {
-            if (!f.exists()) {
-                f.getParentFile().mkdirs();
-                f.createNewFile();
+            if (!Files.exists(p)) {
+                Files.createDirectories(p.getParent());
+                Files.createFile(p);
             }
         } catch (Exception e) {
             System.out.println("Settings.getOrCreateSettingsFile() - Exception: " + e.getMessage());
         }
-        return f;
+        return p;
     }
 
 

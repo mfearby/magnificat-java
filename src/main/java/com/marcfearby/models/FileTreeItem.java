@@ -3,15 +3,18 @@ package com.marcfearby.models;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
-import java.io.File;
-import java.util.Arrays;
+
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * This class extends TreeItem so that the child nodes can be populated dynamically as needed
  *
  * @author Marc Fearby
  */
-public class FileTreeItem<T> extends TreeItem<File> implements Comparable<FileTreeItem> {
+public class FileTreeItem<T> extends TreeItem<Path> implements Comparable<FileTreeItem> {
 
     // https://docs.oracle.com/javafx/2/api/javafx/scene/control/TreeItem.html
 
@@ -31,12 +34,12 @@ public class FileTreeItem<T> extends TreeItem<File> implements Comparable<FileTr
     private boolean isFirstTimeLeaf = true;
 
 
-    public FileTreeItem(File file) {
+    public FileTreeItem(Path file) {
         super(file);
     }
 
 
-    @Override public ObservableList<TreeItem<File>> getChildren() {
+    @Override public ObservableList<TreeItem<Path>> getChildren() {
         if (isFirstTimeChildren) {
             isFirstTimeChildren = false;
             // First getChildren() call, so we actually go off and
@@ -55,48 +58,49 @@ public class FileTreeItem<T> extends TreeItem<File> implements Comparable<FileTr
     @Override public boolean isLeaf() {
         if (isFirstTimeLeaf) {
             isFirstTimeLeaf = false;
-            File f = this.getValue();
-            isLeaf = f.isFile() || !hasSubFolders(f);
+            Path path = this.getValue();
+            isLeaf = Files.isRegularFile(path) || !hasSubFolders(path);
         }
         return isLeaf;
     }
 
 
-    private ObservableList<TreeItem<File>> buildChildren(TreeItem<File> TreeItem) {
-        File f = TreeItem.getValue();
+    private ObservableList<TreeItem<Path>> buildChildren(TreeItem<Path> TreeItem) {
+        Path p = TreeItem.getValue();
 
-        if (f.isDirectory()) {
-            File[] files = f.listFiles();
-            if (files != null) {
-                Arrays.sort(files);
-                ObservableList<TreeItem<File>> children = FXCollections.observableArrayList();
+        if (Files.isDirectory(p)) {
+            ObservableList<TreeItem<Path>> children = FXCollections.observableArrayList();
 
-                for (File child : files) {
-                    if (child.isDirectory() && !child.getName().startsWith(".")) {
-                        FileTreeItem<File> node = new FileTreeItem<>(child);
+            try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(p)) {
+                for (Path path : dirStream) {
+                    if (Files.isDirectory(path) && !path.getFileName().startsWith(".")) {
+                        FileTreeItem<Path> node = new FileTreeItem<>(path);
                         children.add(node);
                     }
                 }
-
-                return children;
+            } catch (IOException e) {
+                System.out.println("FileTreeItem.buildChildren() - Exception: " + e.getMessage());
             }
+
+            return children;
         }
 
         return FXCollections.emptyObservableList();
     }
 
 
-    private boolean hasSubFolders(File dir) {
+    private boolean hasSubFolders(Path dir) {
         boolean answer = false;
-        if (dir.isDirectory()) {
-            File[] files = dir.listFiles();
-            if (files != null) {
-                for (File child : files) {
-                    if (child.isDirectory() && !child.getName().startsWith(".")) {
+        if (Files.isDirectory(dir)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+                for (Path path : directoryStream) {
+                    if (Files.isDirectory(path) && !path.getFileName().startsWith(".")) {
                         answer = true;
                         break;
                     }
                 }
+            } catch (IOException e) {
+                System.out.println("FileTreeItem.hasSubFolders() - Exception: " + e.getMessage());
             }
         }
         return answer;
@@ -105,8 +109,8 @@ public class FileTreeItem<T> extends TreeItem<File> implements Comparable<FileTr
 
     @Override
     public int compareTo(FileTreeItem file) {
-        File f = (File)file.getValue();
-        return this.getValue().getName().compareTo(f.getName());
+        Path f = (Path)file.getValue();
+        return this.getValue().getFileName().compareTo(f.getFileName());
     }
 
 }
