@@ -1,6 +1,5 @@
 package com.marcfearby.components;
 
-import com.marcfearby.WindowController;
 import com.marcfearby.models.TabInfo;
 import com.marcfearby.widgets.FilesTableController;
 import com.marcfearby.widgets.FolderTreeController;
@@ -14,7 +13,7 @@ public class PlainTabController extends TabController {
 
     @FXML private Tab tab;
     @FXML private TreeView tree;
-    private WindowController window;
+    private TabPaneController tabPane;
     @FXML private FolderTreeController treeController;
     @FXML private FilesTableController tableController;
     private TabInfo info;
@@ -33,8 +32,8 @@ public class PlainTabController extends TabController {
     }
 
 
-    public void init(WindowController window, TabInfo info) {
-        this.window = window;
+    public void init(TabPaneController tabPane, TabInfo info) {
+        this.tabPane = tabPane;
         this.info = info;
         treeController.init(this, info.getRoot());
         tableController.init(this, info.getRoot());
@@ -49,7 +48,7 @@ public class PlainTabController extends TabController {
 
 
     public void addTab(File path) {
-        window.addTab(path);
+        tabPane.addTab(path);
     }
 
 
@@ -64,7 +63,7 @@ public class PlainTabController extends TabController {
 
 
     private void saveTabInfo() {
-        window.saveTabInfo();
+        tabPane.saveTabInfo();
     }
 
 

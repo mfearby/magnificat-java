@@ -1,6 +1,5 @@
 package com.marcfearby.Utils;
 
-import com.marcfearby.components.TabController;
 import com.marcfearby.models.TabInfo;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
@@ -67,7 +66,6 @@ public class Settings {
 
         File settingsFile = getOrCreateSettingsFile(TABS_INI);
         try {
-
             FileWriter fw = new FileWriter(settingsFile);
             StringWriter sw = getNewSettings(tabs);
             fw.write(sw.toString());

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
@@ -14,8 +13,6 @@
         </Pane>
     </top>
     <center>
-      <TabPane fx:id="tabs" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER">
-
-      </TabPane>
+        <fx:include fx:id="tabs" source="./components/TabPaneView.fxml" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>
