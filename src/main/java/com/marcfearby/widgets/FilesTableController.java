@@ -22,17 +22,23 @@ import java.util.ResourceBundle;
 
 public class FilesTableController implements Initializable {
 
-    private PlainTabController tab;
-    private final Locale currentLocale = Locale.getDefault();
     @FXML private TableView<Path> table;
     @FXML private TableColumn<Path, String> colName;
     @FXML private TableColumn<Path, String> colSize;
     @FXML private TableColumn<Path, String> colModified;
     @FXML private TableColumn<Path, String> colType;
 
+    private final Locale currentLocale = Locale.getDefault();
+
+
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         setupTable();
+    }
+
+
+    public void init(Path directory) {
+        selectFolder(directory);
     }
 
 
@@ -74,12 +80,6 @@ public class FilesTableController implements Initializable {
             if (i > 0) ext = param.getValue().getFileName().toString().substring(i + 1);
             return new SimpleStringProperty(ext.toUpperCase());
         });
-    }
-
-
-    public void init(PlainTabController tab, Path directory) {
-        this.tab = tab;
-        selectFolder(directory);
     }
 
 

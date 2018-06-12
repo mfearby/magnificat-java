@@ -1,5 +1,6 @@
 package com.marcfearby.components;
 
+import com.marcfearby.interfaces.TabPaneHandler;
 import com.marcfearby.utils.Global;
 import com.marcfearby.utils.Settings;
 import com.marcfearby.models.TabInfo;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class TabPaneController implements Initializable {
+public class TabPaneController implements Initializable, TabPaneHandler {
 
     @FXML private TabPane tabs;
     private ArrayList<AbstractTabController> tabControllers;
@@ -52,7 +53,7 @@ public class TabPaneController implements Initializable {
             PlainTabController ctrl = loader.getController();
 
             tabControllers.add(ctrl);
-            ctrl.init(this, info);
+            ctrl.init(info, this);
 
             tab.setOnCloseRequest(event -> {
                 // Don't allow the last tab to be closed
@@ -60,7 +61,7 @@ public class TabPaneController implements Initializable {
                     event.consume();
                 } else {
                     tabControllers.remove(ctrl);
-                    saveTabInfo();
+                    saveTabInfos();
                 }
             });
 
@@ -75,13 +76,15 @@ public class TabPaneController implements Initializable {
     }
 
 
+    @Override
     public void addTab(Path path) {
         TabInfo info = new TabInfo(TabInfo.TabType.PLAIN, path, true);
         addTab(info);
     }
 
 
-    public void saveTabInfo() {
+    @Override
+    public void saveTabInfos() {
         List<TabInfo> tabs = tabControllers.stream()
                 .map(AbstractTabController::getTabInfo)
                 .collect(Collectors.toList());

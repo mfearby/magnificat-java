@@ -1,6 +1,7 @@
 package com.marcfearby.widgets;
 
-import com.marcfearby.components.PlainTabController;
+import com.marcfearby.interfaces.FolderTreeHandler;
+import com.marcfearby.interfaces.PlainTabHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -24,20 +25,22 @@ public class FolderTreeController {
 
     // https://docs.oracle.com/javafx/2/ui_controls/tree-view.htm
     @FXML private TreeView<Path> tree;
-    private PlainTabController tab;
+
     private final Image closedImage = new Image(getClass().getResourceAsStream("/icons/tango/folder.png"));
     private final Image openImage = new Image(getClass().getResourceAsStream("/icons/tango/folder-open.png"));
     private final Image refreshImage = new Image(getClass().getResourceAsStream("/icons/tango/view-refresh.png"));
     private final Image newTabImage = new Image(getClass().getResourceAsStream("/icons/tango/tab-new.png"));
 
-
-    public FolderTreeController() {
-
-    }
+    private FolderTreeHandler treeHandler;
+    private PlainTabHandler tabHandler;
 
 
-    public void init(PlainTabController tab, Path directory) {
-        this.tab = tab;
+    public FolderTreeController() { }
+
+
+    public void init(Path directory, FolderTreeHandler treeHandler, PlainTabHandler tabHandler) {
+        this.treeHandler = treeHandler;
+        this.tabHandler = tabHandler;
         setupTree(directory);
     }
 
@@ -66,7 +69,7 @@ public class FolderTreeController {
                     });
 
                     MenuItem o = new MenuItem("Open in new tab", new ImageView(newTabImage));
-                    o.setOnAction(event -> addTab(item));
+                    o.setOnAction(event -> tabHandler.addTab(item));
 
                     if (item == tree.getRoot().getValue()) {
                         MenuItem f = new MenuItem("Select folder...", new ImageView(openImage));
@@ -91,8 +94,8 @@ public class FolderTreeController {
                 .selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
-                        Path item = newValue.getValue();
-                        selectFolder(item);
+                        Path path = newValue.getValue();
+                        treeHandler.selectTreePath(path);
                     }
                 });
 
@@ -107,20 +110,11 @@ public class FolderTreeController {
             root.setExpanded(true);
             tree.getSelectionModel().selectFirst();
             // Update the tab controller's TabInfo object with the new root directory
-            tab.setRoot(directory);
+            tabHandler.changeTabRoot(directory);
         } catch (Exception e) {
             System.out.println("FolderTreeController.setRoot(): " + e);
         }
     }
 
-
-    private void addTab(Path path) {
-        tab.addTab(path);
-    }
-
-
-    private void selectFolder(Path directory) {
-        tab.selectFolder(directory);
-    }
 
 }

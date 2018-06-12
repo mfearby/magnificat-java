@@ -1,5 +1,8 @@
 package com.marcfearby.components;
 
+import com.marcfearby.interfaces.FolderTreeHandler;
+import com.marcfearby.interfaces.PlainTabHandler;
+import com.marcfearby.interfaces.TabPaneHandler;
 import com.marcfearby.models.TabInfo;
 import com.marcfearby.widgets.FilesTableController;
 import com.marcfearby.widgets.FolderTreeController;
@@ -9,11 +12,11 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TreeView;
 import java.nio.file.Path;
 
-public class PlainTabController extends AbstractTabController {
+public class PlainTabController extends AbstractTabController implements FolderTreeHandler, PlainTabHandler {
 
     @FXML private Tab tab;
     @FXML private TreeView tree;
-    private TabPaneController tabPane;
+    private TabPaneHandler tabPaneHandler;
     @FXML private FolderTreeController treeController;
     @FXML private FilesTableController tableController;
     private TabInfo info;
@@ -28,27 +31,45 @@ public class PlainTabController extends AbstractTabController {
         info.setActive(tab.isSelected());
         // Save the tabs only for the active tab (the deactivated tab's event will be called before this one)
         if (tab.isSelected())
-            saveTabInfo();
+            saveTabInfos();
     }
 
 
-    public void init(TabPaneController tabPane, TabInfo info) {
-        this.tabPane = tabPane;
+    public void init(TabInfo info, TabPaneHandler tabPaneHandler) {
+        this.tabPaneHandler = tabPaneHandler;
         this.info = info;
-        treeController.init(this, info.getRoot());
-        tableController.init(this, info.getRoot());
+        treeController.init(info.getRoot(), this, this);
+        tableController.init(info.getRoot());
 
         tab.setText(getTabTitle());
     }
 
 
-    public void selectFolder(Path directory) {
-        tableController.selectFolder(directory);
+    /**
+     * Received from the TreeView child component whenever a new folder is selected
+     * @param path
+     */
+    @Override
+    public void selectTreePath(Path path) {
+        tableController.selectFolder(path);
     }
 
 
+    @Override
     public void addTab(Path path) {
-        tabPane.addTab(path);
+        tabPaneHandler.addTab(path);
+    }
+
+
+    @Override
+    public void changeTabRoot(Path path) {
+        info.setRoot(path);
+        saveTabInfos();
+    }
+
+
+    private void saveTabInfos() {
+        tabPaneHandler.saveTabInfos();
     }
 
 
@@ -59,17 +80,6 @@ public class PlainTabController extends AbstractTabController {
 
     public String getTabTitle() {
         return info.getRoot().getFileName().toString();
-    }
-
-
-    private void saveTabInfo() {
-        tabPane.saveTabInfo();
-    }
-
-
-    public void setRoot(Path root) {
-        info.setRoot(root);
-        saveTabInfo();
     }
 
 }
