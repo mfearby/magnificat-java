@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class TabPaneController implements Initializable {
 
     @FXML private TabPane tabs;
-    private ArrayList<TabController> tabControllers;
+    private ArrayList<AbstractTabController> tabControllers;
 
 
     public TabPaneController() {
@@ -70,7 +70,7 @@ public class TabPaneController implements Initializable {
                 tabs.getSelectionModel().select(tab);
 
         } catch (Exception e) {
-            System.out.println("TabPaneController.addTab() - Exception: " + e.getMessage());
+            System.out.println("TabPaneController.addTab(): " + e);
         }
     }
 
@@ -83,7 +83,7 @@ public class TabPaneController implements Initializable {
 
     public void saveTabInfo() {
         List<TabInfo> tabs = tabControllers.stream()
-                .map(TabController::getTabInfo)
+                .map(AbstractTabController::getTabInfo)
                 .collect(Collectors.toList());
 
         Settings.saveTabs(tabs);

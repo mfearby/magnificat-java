@@ -70,13 +70,13 @@ public class FileTreeItem<T> extends TreeItem<Path> implements Comparable<FileTr
 
             try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(p)) {
                 for (Path path : dirStream) {
-                    if (Files.isDirectory(path) && !path.getFileName().startsWith(".")) {
+                    if (Files.isDirectory(path) && !path.getFileName().toString().startsWith(".")) {
                         FileTreeItem<Path> node = new FileTreeItem<>(path);
                         children.add(node);
                     }
                 }
             } catch (IOException e) {
-                System.out.println("FileTreeItem.buildChildren() - Exception: " + e.getMessage());
+                System.out.println("FileTreeItem.buildChildren(): " + e);
             }
 
             return children;
@@ -91,13 +91,13 @@ public class FileTreeItem<T> extends TreeItem<Path> implements Comparable<FileTr
         if (Files.isDirectory(dir)) {
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
                 for (Path path : directoryStream) {
-                    if (Files.isDirectory(path) && !path.getFileName().startsWith(".")) {
+                    if (Files.isDirectory(path) && !path.getFileName().toString().startsWith(".")) {
                         answer = true;
                         break;
                     }
                 }
-            } catch (IOException e) {
-                System.out.println("FileTreeItem.hasSubFolders() - Exception: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("FileTreeItem.hasSubFolders(): " + e);
             }
         }
         return answer;

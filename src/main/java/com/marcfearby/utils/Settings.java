@@ -57,7 +57,7 @@ public class Settings {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Settings.getTabs() - Exception: " + e.getMessage());
+            System.out.println("Settings.getTabs(): " + e);
         }
 
         return tabs;
@@ -75,7 +75,7 @@ public class Settings {
             fw.write(sw.toString());
             fw.close();
         } catch (Exception e) {
-            System.out.println("Settings.saveTabs() - Exception: " + e.getMessage());
+            System.out.println("Settings.saveTabs(): " + e);
         }
     }
 
@@ -97,7 +97,7 @@ public class Settings {
 
             ini.store(contents);
         } catch (Exception e) {
-            System.out.println("Settings.getNewSettings() - Exception: " + e.getMessage());
+            System.out.println("Settings.getNewSettings(): " + e);
         }
 
         return contents;
@@ -118,7 +118,7 @@ public class Settings {
         }
         catch (IOException e)
         {
-            System.out.println("Settings.readSettingsFile() - Exception: " + e.getMessage());
+            System.out.println("Settings.readSettingsFile(): " + e);
         }
 
         return sb.toString();
@@ -134,7 +134,7 @@ public class Settings {
                 Files.createFile(p);
             }
         } catch (Exception e) {
-            System.out.println("Settings.getOrCreateSettingsFile() - Exception: " + e.getMessage());
+            System.out.println("Settings.getOrCreateSettingsFile(): " + e);
         }
         return p;
     }

@@ -109,7 +109,7 @@ public class FolderTreeController {
             // Update the tab controller's TabInfo object with the new root directory
             tab.setRoot(directory);
         } catch (Exception e) {
-            System.out.println("FolderTreeController.setRoot() - Exception: " + e.getMessage());
+            System.out.println("FolderTreeController.setRoot(): " + e);
         }
     }
 

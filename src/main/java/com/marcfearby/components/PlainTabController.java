@@ -9,7 +9,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TreeView;
 import java.nio.file.Path;
 
-public class PlainTabController extends TabController {
+public class PlainTabController extends AbstractTabController {
 
     @FXML private Tab tab;
     @FXML private TreeView tree;

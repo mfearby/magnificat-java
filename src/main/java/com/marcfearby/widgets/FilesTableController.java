@@ -94,7 +94,7 @@ public class FilesTableController implements Initializable {
                     }
                 }
             } catch (IOException e) {
-                System.out.println("FilesTableController.selectFolder() - Exception: " + e.getMessage());
+                System.out.println("FilesTableController.selectFolder(): " + e);
             }
         }
 

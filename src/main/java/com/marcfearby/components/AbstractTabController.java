@@ -2,7 +2,7 @@ package com.marcfearby.components;
 
 import com.marcfearby.models.TabInfo;
 
-abstract public class TabController {
+abstract public class AbstractTabController {
 
     abstract public TabInfo getTabInfo();
 

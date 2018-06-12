@@ -11,7 +11,7 @@ import com.google.common.jimfs.Jimfs;
 /* This is probably a naughty name for a class, but what are you gonna do? ;-) */
 public class Global {
 
-    public static boolean isTesting = true;
+    public static boolean isTesting = false;
     private static String testingHome = "/Users/marc";
 
     /**
@@ -21,7 +21,7 @@ public class Global {
     public static FileSystem getFileSystem() {
         if (isTesting) {
             // For a simple file system with Unix-style paths and behavior:
-            FileSystem fs = Jimfs.newFileSystem(Configuration.osX());
+            FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
 
             try {
                 Path dir = fs.getPath(testingHome, "Music");
