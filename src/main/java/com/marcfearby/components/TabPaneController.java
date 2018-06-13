@@ -48,7 +48,11 @@ public class TabPaneController implements Initializable, TabPaneHandler {
 
     private void addTab(TabInfo info) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/components/PlainTabView.fxml"));
+//            Locale.setDefault(new Locale("in", "ID")); // test Indonesian
+//            Locale.setDefault(new Locale("en", "AU")); // test Australian
+            ResourceBundle bundle = ResourceBundle.getBundle("fxml.widgets.FilesTableView");
+            URL location = getClass().getResource("/fxml/components/PlainTabView.fxml");
+            FXMLLoader loader = new FXMLLoader(location, bundle);
             Tab tab = loader.load();
             PlainTabController ctrl = loader.getController();
 

@@ -19,26 +19,16 @@ public class Global {
      * @return A FileSystem object
      */
     public static FileSystem getFileSystem() {
+        // I should look into dependency injection one day (perhaps with Dagger 2?)
         if (isTesting) {
-            // For a simple file system with Unix-style paths and behavior:
             FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
-
-            try {
-                Path dir = fs.getPath(testingHome, "Music");
-                Files.createDirectories(dir);
-
-                Path test = dir.resolve("test.mp3");
-                Files.createFile(test);
-//                Files.write(test, ImmutableList.of("asdf"), StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            setupTestFileSystem(fs);
             return fs;
         } else {
             return FileSystems.getDefault();
         }
     }
+
 
     public static Path getUserHomeFolder() {
         FileSystem fs = getFileSystem();
@@ -47,6 +37,23 @@ public class Global {
             return fs.getPath(testingHome);
         } else {
             return fs.getPath(System.getProperty("user.home"));
+        }
+    }
+
+
+    private static void setupTestFileSystem(FileSystem fs) {
+        try {
+            Path dir = fs.getPath(testingHome, "Music");
+            Files.createDirectories(dir);
+
+            Path test = dir.resolve("test.mp3");
+            Files.createFile(test);
+
+            Path more = dir.resolveSibling("Other/Whatever");
+            Files.createDirectories(more);
+//                Files.write(test, ImmutableList.of("asdf"), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

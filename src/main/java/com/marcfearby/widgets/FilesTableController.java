@@ -1,6 +1,5 @@
 package com.marcfearby.widgets;
 
-import com.marcfearby.components.PlainTabController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,7 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.commons.io.FileUtils;
-
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;

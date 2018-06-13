@@ -4,7 +4,6 @@ import com.marcfearby.models.TabInfo;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 import org.ini4j.Wini;
-
 import java.io.*;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
