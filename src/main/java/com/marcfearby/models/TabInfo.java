@@ -9,6 +9,7 @@ public class TabInfo {
     private TabType type;
     private Path root;
     private boolean active;
+    private String selectedTreePath = null;
 
     public TabInfo(TabType type, Path root, boolean active) {
         this.type = type;
@@ -20,6 +21,7 @@ public class TabInfo {
         return type;
     }
 
+
     public Path getRoot() {
         return root;
     }
@@ -28,12 +30,22 @@ public class TabInfo {
         this.root = root;
     }
 
+
     public boolean getActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+
+    public String getSelectedTreePath() {
+        return this.selectedTreePath;
+    }
+
+    public void setSelectedTreePath(String path) {
+        this.selectedTreePath = path;
     }
 
 }

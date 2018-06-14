@@ -1,9 +1,10 @@
 package com.marcfearby.interfaces;
 
+import javafx.scene.control.TreeItem;
 import java.nio.file.Path;
 
 public interface FolderTreeHandler {
 
-    void selectTreePath(Path path);
+    void selectTreePath(TreeItem<Path> path);
 
 }

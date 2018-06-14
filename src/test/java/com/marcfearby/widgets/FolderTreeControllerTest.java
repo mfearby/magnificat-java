@@ -2,6 +2,7 @@ package com.marcfearby.widgets;
 
 import com.marcfearby.interfaces.FolderTreeHandler;
 import com.marcfearby.interfaces.PlainTabHandler;
+import com.marcfearby.models.FileTreeItem;
 import com.marcfearby.utils.Global;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import static org.junit.Assert.*;
 public class FolderTreeControllerTest extends ApplicationTest {
 
     private TreeView<Path> tree;
+    FolderTreeController ctrl;
     private Path receivedPath = null;
 
     @Override
@@ -36,12 +38,12 @@ public class FolderTreeControllerTest extends ApplicationTest {
         Global.isTesting = true;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/widgets/FolderTreeView.fxml"));
         tree = loader.load();
-        FolderTreeController ctrl = loader.getController();
+        ctrl = loader.getController();
 
         class TreeHandler implements FolderTreeHandler {
             @Override
-            public void selectTreePath(Path path) {
-                receivedPath = path;
+            public void selectTreePath(TreeItem<Path> item) {
+                receivedPath = item.getValue();
             }
         }
 
@@ -110,6 +112,19 @@ public class FolderTreeControllerTest extends ApplicationTest {
         assertNotNull(receivedPath);
         assertEquals("Path received for new tab is incorrect", "/Users/marc/Music", receivedPath.toString());
     }
+
+
+    @Test
+    public void expand_tree_path() {
+        String target = "/Users/marc/Other/Whatever";
+        ctrl.expandPath(target);
+        // I could probably have just checked receivedPath, but this makes me feel better ;-)
+        FileTreeItem<Path> root = (FileTreeItem<Path>)tree.getSelectionModel().getSelectedItem();
+        assertNotNull("Selected tree node is null after calling expandPath()", root);
+        assertEquals("Path for getSelectedItem after calling expandPath() is incorrect", target, root.getValue().toString());
+    }
+
+
 
 
 //    // Not sure how to test this yet since it uses a javafx.stage.DirectoryChooser

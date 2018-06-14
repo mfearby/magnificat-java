@@ -24,6 +24,7 @@ public class Settings {
     private static final String KEY_PATH = "path";
     private static final String KEY_TYPE = "type";
     private static final String KEY_ACTIVE = "active";
+    private static final String KEY_SELECTED_PATH = "selected";
 
     public static boolean appLoaded = false;
 
@@ -52,6 +53,13 @@ public class Settings {
                     TabInfo.TabType type = TabInfo.TabType.valueOf(ini.get(section, KEY_TYPE));
                     boolean active = Boolean.parseBoolean(ini.get(section, KEY_ACTIVE));
                     TabInfo info = new TabInfo(type, file, active);
+
+                    String selectedValue = ini.get(section, KEY_SELECTED_PATH);
+                    if (selectedValue != null) {
+                        Path selected = fs.getPath(selectedValue);
+                        info.setSelectedTreePath(selected.toString());
+                    }
+
                     tabs.add(info);
                 }
             }
@@ -92,6 +100,7 @@ public class Settings {
                 ini.put(section, KEY_PATH, info.getRoot());
                 ini.put(section, KEY_TYPE, info.getType().name());
                 ini.put(section, KEY_ACTIVE, info.getActive());
+                ini.put(section, KEY_SELECTED_PATH, info.getSelectedTreePath());
             }
 
             ini.store(contents);

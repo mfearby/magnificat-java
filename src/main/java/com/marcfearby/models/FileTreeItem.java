@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Optional;
 
 /**
  * This class extends TreeItem so that the child nodes can be populated dynamically as needed
@@ -101,6 +102,45 @@ public class FileTreeItem<T> extends TreeItem<Path> implements Comparable<FileTr
             }
         }
         return answer;
+    }
+
+
+    public FileTreeItem<Path> expandPath(String target, boolean expandTarget) {
+        Optional<TreeItem<Path>> match = this.getChildren()
+                .stream()
+                .filter(p -> target.startsWith(p.getValue().toString()))
+                .findFirst();
+
+        if (match.isPresent()) {
+            FileTreeItem<Path> item = (FileTreeItem<Path>)match.get();
+
+            if (item.getValue().toString().equalsIgnoreCase(target)) {
+                if (expandTarget)
+                    item.setExpanded(true);
+                return item;
+            } else {
+                item.setExpanded(true);
+                return item.expandPath(target, expandTarget);
+            }
+        }
+
+        return null;
+//            System.out.println("Found match: " + match.get().getValue().toString());
+
+//        match.ifPresent(m -> {
+//            System.out.println("Found match: " + m.getValue().toString());
+//            FileTreeItem i = (FileTreeItem)m;
+//
+//            if (m.getValue().toString().equalsIgnoreCase(target)) {
+//                Object asdf = i.getGraphic().getParent();
+//                System.out.println("asdf");
+//                return m;
+//            }
+//            i.setExpanded(true);
+//
+//            i.expandPath(target);
+//        });
+
     }
 
 

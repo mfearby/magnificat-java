@@ -9,6 +9,7 @@ import com.marcfearby.widgets.FolderTreeController;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import java.nio.file.Path;
 
@@ -21,10 +22,10 @@ public class PlainTabController extends AbstractTabController implements FolderT
     @FXML private FilesTableController tableController;
     private TabInfo info;
 
-
     public PlainTabController() {
 
     }
+
 
     @FXML
     public void onSelectionChanged(Event e) {
@@ -38,20 +39,30 @@ public class PlainTabController extends AbstractTabController implements FolderT
     public void init(TabInfo info, TabPaneHandler tabPaneHandler) {
         this.tabPaneHandler = tabPaneHandler;
         this.info = info;
+
+        // Save before init() which triggers saveTabInfos() & overrides it with getRoot() before expandPath() below
+        String selectedTreePath = info.getSelectedTreePath();
+
         treeController.init(info.getRoot(), this, this);
         tableController.init(info.getRoot());
 
         tab.setText(getTabTitle());
+
+        if (selectedTreePath != null)
+            treeController.expandPath(selectedTreePath);
     }
 
 
     /**
      * Received from the TreeView child component whenever a new folder is selected
-     * @param path
+     * @param item
      */
     @Override
-    public void selectTreePath(Path path) {
-        tableController.selectFolder(path);
+    public void selectTreePath(TreeItem<Path> item) {
+        tableController.selectFolder(item.getValue());
+
+        info.setSelectedTreePath(item.getValue().toString());
+        saveTabInfos();
     }
 
 

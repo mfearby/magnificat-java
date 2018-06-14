@@ -3,10 +3,7 @@ package com.marcfearby.widgets;
 import com.marcfearby.interfaces.FolderTreeHandler;
 import com.marcfearby.interfaces.PlainTabHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import com.marcfearby.models.FileTreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -94,8 +91,7 @@ public class FolderTreeController {
                 .selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
-                        Path path = newValue.getValue();
-                        treeHandler.selectTreePath(path);
+                        treeHandler.selectTreePath(newValue);
                     }
                 });
 
@@ -116,5 +112,13 @@ public class FolderTreeController {
         }
     }
 
+
+    public void expandPath(String target) {
+        FileTreeItem<Path> root = (FileTreeItem<Path>)tree.getRoot();
+        FileTreeItem<Path> found = root.expandPath(target, true);
+        if (found != null) {
+            tree.getSelectionModel().select(found);
+        }
+    }
 
 }
