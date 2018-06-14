@@ -125,6 +125,12 @@ public class FolderTreeControllerTest extends ApplicationTest {
     }
 
 
+    @Test
+    public void expand_nonexistent_tree_path_as_far_as_possible() {
+        String target = "/Users/marc/Other/Whatever/NonexistentFolder";
+        ctrl.expandPath(target);
+        assertEquals("/Users/marc/Other/Whatever", receivedPath.toString());
+    }
 
 
 //    // Not sure how to test this yet since it uses a javafx.stage.DirectoryChooser

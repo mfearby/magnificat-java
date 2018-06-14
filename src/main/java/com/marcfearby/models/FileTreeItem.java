@@ -124,23 +124,8 @@ public class FileTreeItem<T> extends TreeItem<Path> implements Comparable<FileTr
             }
         }
 
-        return null;
-//            System.out.println("Found match: " + match.get().getValue().toString());
-
-//        match.ifPresent(m -> {
-//            System.out.println("Found match: " + m.getValue().toString());
-//            FileTreeItem i = (FileTreeItem)m;
-//
-//            if (m.getValue().toString().equalsIgnoreCase(target)) {
-//                Object asdf = i.getGraphic().getParent();
-//                System.out.println("asdf");
-//                return m;
-//            }
-//            i.setExpanded(true);
-//
-//            i.expandPath(target);
-//        });
-
+        // This is the end of the line - the remainder of the target path cannot be found
+        return (FileTreeItem<Path>)this;
     }
 
 
