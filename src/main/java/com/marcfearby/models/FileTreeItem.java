@@ -105,6 +105,7 @@ public class FileTreeItem<T> extends TreeItem<Path> implements Comparable<FileTr
     }
 
 
+    @SuppressWarnings("unchecked")
     public FileTreeItem<Path> expandPath(String target, boolean expandTarget) {
         Optional<TreeItem<Path>> match = this.getChildren()
                 .stream()
@@ -124,7 +125,8 @@ public class FileTreeItem<T> extends TreeItem<Path> implements Comparable<FileTr
             }
         }
 
-        // This is the end of the line - the remainder of the target path cannot be found
+        // This is the end of the line - the remainder of the target path cannot be found.
+        // Warning suppression added for this unchecked cast.
         return (FileTreeItem<Path>)this;
     }
 

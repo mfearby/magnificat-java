@@ -5,6 +5,8 @@ import java.nio.file.Path;
 
 public interface FolderTreeHandler {
 
-    void selectTreePath(TreeItem<Path> path);
+    void selectTreePath(TreeItem<Path> item);
+
+    void toggleSelectedTreePath(TreeItem<Path> item);
 
 }

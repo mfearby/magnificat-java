@@ -10,6 +10,7 @@ public class TabInfo {
     private Path root;
     private boolean active;
     private String selectedTreePath = null;
+    private boolean expanded = false;
 
     public TabInfo(TabType type, Path root, boolean active) {
         this.type = type;
@@ -46,6 +47,15 @@ public class TabInfo {
 
     public void setSelectedTreePath(String path) {
         this.selectedTreePath = path;
+    }
+
+
+    public boolean getExpanded() {
+        return this.expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
     }
 
 }

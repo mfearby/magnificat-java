@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 public class FolderTreeControllerTest extends ApplicationTest {
 
     private TreeView<Path> tree;
-    FolderTreeController ctrl;
+    private FolderTreeController ctrl;
     private Path receivedPath = null;
 
     @Override
@@ -45,6 +45,10 @@ public class FolderTreeControllerTest extends ApplicationTest {
             public void selectTreePath(TreeItem<Path> item) {
                 receivedPath = item.getValue();
             }
+            @Override
+            public void toggleSelectedTreePath(TreeItem<Path> item) {
+
+            }
         }
 
         class TabHandler implements PlainTabHandler {
@@ -58,7 +62,7 @@ public class FolderTreeControllerTest extends ApplicationTest {
         }
 
         FileSystem fs = Global.getFileSystem();
-        Path home = fs.getPath("/Users/marc");
+        Path home = fs.getPath(Global.TESTING_PATH_HOME);
 
         ctrl.init(home, new TreeHandler(), new TabHandler());
 
@@ -101,7 +105,8 @@ public class FolderTreeControllerTest extends ApplicationTest {
     public void select_root_node() {
         clickOn("Music");
         assertNotNull(receivedPath);
-        assertEquals("Path received for selected tree node is incorrect", "/Users/marc/Music", receivedPath.toString());
+        String expected = Global.TESTING_PATH_MUSIC;
+        assertEquals("Path received for selected tree node is incorrect", expected, receivedPath.toString());
     }
 
 
@@ -110,26 +115,43 @@ public class FolderTreeControllerTest extends ApplicationTest {
         clickOn("Music", MouseButton.SECONDARY);
         clickOn("Open in new tab");
         assertNotNull(receivedPath);
-        assertEquals("Path received for new tab is incorrect", "/Users/marc/Music", receivedPath.toString());
+        String expected = Global.TESTING_PATH_MUSIC;
+        assertEquals("Path received for the new tab is incorrect", expected, receivedPath.toString());
     }
 
 
     @Test
     public void expand_tree_path() {
-        String target = "/Users/marc/Other/Whatever";
-        ctrl.expandPath(target);
+        String expected = Global.TESTING_PATH_WHATEVER;
+        ctrl.expandPath(expected, false);
         // I could probably have just checked receivedPath, but this makes me feel better ;-)
         FileTreeItem<Path> root = (FileTreeItem<Path>)tree.getSelectionModel().getSelectedItem();
-        assertNotNull("Selected tree node is null after calling expandPath()", root);
-        assertEquals("Path for getSelectedItem after calling expandPath() is incorrect", target, root.getValue().toString());
+        assertNotNull(root);
+        assertEquals(expected, root.getValue().toString());
     }
 
 
     @Test
     public void expand_nonexistent_tree_path_as_far_as_possible() {
-        String target = "/Users/marc/Other/Whatever/NonexistentFolder";
-        ctrl.expandPath(target);
-        assertEquals("/Users/marc/Other/Whatever", receivedPath.toString());
+        String expected = Global.TESTING_PATH_WHATEVER;
+        ctrl.expandPath(expected + "/NonexistentFolder", false);
+        assertEquals(expected, receivedPath.toString());
+    }
+
+
+    @Test
+    public void expand_tree_path_in_an_expanded_state() {
+        ctrl.expandPath(Global.TESTING_PATH_OTHER, true);
+        FileTreeItem<Path> root = (FileTreeItem<Path>)tree.getSelectionModel().getSelectedItem();
+        assertTrue(root.isExpanded());
+    }
+
+
+    @Test
+    public void expand_tree_path_in_a_collapsed_state() {
+        ctrl.expandPath(Global.TESTING_PATH_OTHER, false);
+        FileTreeItem<Path> root = (FileTreeItem<Path>)tree.getSelectionModel().getSelectedItem();
+        assertFalse(root.isExpanded());
     }
 
 

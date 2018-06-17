@@ -42,6 +42,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
 
         // Save before init() which triggers saveTabInfos() & overrides it with getRoot() before expandPath() below
         String selectedTreePath = info.getSelectedTreePath();
+        boolean expanded = info.getExpanded();
 
         treeController.init(info.getRoot(), this, this);
         tableController.init(info.getRoot());
@@ -49,7 +50,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
         tab.setText(getTabTitle());
 
         if (selectedTreePath != null)
-            treeController.expandPath(selectedTreePath);
+            treeController.expandPath(selectedTreePath, expanded);
     }
 
 
@@ -60,8 +61,19 @@ public class PlainTabController extends AbstractTabController implements FolderT
     @Override
     public void selectTreePath(TreeItem<Path> item) {
         tableController.selectFolder(item.getValue());
+        saveSelectedItem(item);
+    }
 
+
+    @Override
+    public void toggleSelectedTreePath(TreeItem<Path> item) {
+        saveSelectedItem(item);
+    }
+
+
+    private void saveSelectedItem(TreeItem<Path> item) {
         info.setSelectedTreePath(item.getValue().toString());
+        info.setExpanded(item.isExpanded());
         saveTabInfos();
     }
 

@@ -30,7 +30,7 @@ public class FolderTreeController {
 
     private FolderTreeHandler treeHandler;
     private PlainTabHandler tabHandler;
-
+    private TreeItem<Path> selectedItem = null;
 
     public FolderTreeController() { }
 
@@ -91,6 +91,7 @@ public class FolderTreeController {
                 .selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
+                        selectedItem = newValue;
                         treeHandler.selectTreePath(newValue);
                     }
                 });
@@ -105,17 +106,33 @@ public class FolderTreeController {
             tree.setRoot(root);
             root.setExpanded(true);
             tree.getSelectionModel().selectFirst();
+
             // Update the tab controller's TabInfo object with the new root directory
             tabHandler.changeTabRoot(directory);
+
+            root.addEventHandler(TreeItem.branchExpandedEvent(), this::branchToggled);
+            root.addEventHandler(TreeItem.branchCollapsedEvent(), this::branchToggled);
         } catch (Exception e) {
             System.out.println("FolderTreeController.setRoot(): " + e);
         }
     }
 
 
-    public void expandPath(String target) {
+    @SuppressWarnings("unchecked")
+    private void branchToggled(TreeItem.TreeModificationEvent event)
+    {
+        // Warning suppression added for this unchecked cast
+        TreeItem<Path> item = event.getSource();
+        boolean isSelected = selectedItem.equals(item);
+
+        if (isSelected)
+            treeHandler.toggleSelectedTreePath(item);
+    }
+
+
+    public void expandPath(String target, boolean expanded) {
         FileTreeItem<Path> root = (FileTreeItem<Path>)tree.getRoot();
-        FileTreeItem<Path> found = root.expandPath(target, true);
+        FileTreeItem<Path> found = root.expandPath(target, expanded);
         if (found != null) {
             tree.getSelectionModel().select(found);
         }

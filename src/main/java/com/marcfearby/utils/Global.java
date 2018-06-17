@@ -12,7 +12,10 @@ import com.google.common.jimfs.Jimfs;
 public class Global {
 
     public static boolean isTesting = false;
-    private static String testingHome = "/Users/marc";
+    public static String TESTING_PATH_HOME = "/Users/marc";
+    public static String TESTING_PATH_MUSIC = TESTING_PATH_HOME + "/Music";
+    public static String TESTING_PATH_OTHER = TESTING_PATH_HOME + "/Other";
+    public static String TESTING_PATH_WHATEVER = TESTING_PATH_OTHER + "/Whatever";
 
     /**
      * Get the current file system in effect (default for normal use or Jimfs for testing)
@@ -34,7 +37,7 @@ public class Global {
         FileSystem fs = getFileSystem();
         // Note: Don't use Paths.get() because it is hard wired to the default file system
         if (isTesting) {
-            return fs.getPath(testingHome);
+            return fs.getPath(TESTING_PATH_HOME);
         } else {
             return fs.getPath(System.getProperty("user.home"));
         }
@@ -43,13 +46,13 @@ public class Global {
 
     private static void setupTestFileSystem(FileSystem fs) {
         try {
-            Path dir = fs.getPath(testingHome, "Music");
+            Path dir = fs.getPath(TESTING_PATH_MUSIC);
             Files.createDirectories(dir);
 
             Path test = dir.resolve("test.mp3");
             Files.createFile(test);
 
-            Path more = dir.resolveSibling("Other/Whatever");
+            Path more = fs.getPath(TESTING_PATH_WHATEVER);
             Files.createDirectories(more);
 //                Files.write(test, ImmutableList.of("asdf"), StandardCharsets.UTF_8);
         } catch (IOException e) {

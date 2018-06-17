@@ -25,6 +25,7 @@ public class Settings {
     private static final String KEY_TYPE = "type";
     private static final String KEY_ACTIVE = "active";
     private static final String KEY_SELECTED_PATH = "selected";
+    private static final String KEY_EXPANDED_PATH = "expanded";
 
     public static boolean appLoaded = false;
 
@@ -59,6 +60,9 @@ public class Settings {
                         Path selected = fs.getPath(selectedValue);
                         info.setSelectedTreePath(selected.toString());
                     }
+
+                    boolean expanded = Boolean.parseBoolean(ini.get(section, KEY_EXPANDED_PATH));
+                    info.setExpanded(expanded);
 
                     tabs.add(info);
                 }
@@ -101,6 +105,7 @@ public class Settings {
                 ini.put(section, KEY_TYPE, info.getType().name());
                 ini.put(section, KEY_ACTIVE, info.getActive());
                 ini.put(section, KEY_SELECTED_PATH, info.getSelectedTreePath());
+                ini.put(section, KEY_EXPANDED_PATH, info.getExpanded());
             }
 
             ini.store(contents);
