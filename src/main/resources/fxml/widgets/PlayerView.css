@@ -1,0 +1,64 @@
+HBox {
+    -fx-background-color: linear-gradient(#e6e6e6, #d0d0d0);
+}
+
+Button {
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#play-button {
+     -fx-background-image: url('/icons/tango/media-playback-start.png');
+}
+
+#pause-button {
+    -fx-background-image: url('/icons/tango/media-playback-pause.png');
+}
+
+#stop-button {
+    -fx-background-image: url('/icons/tango/media-playback-stop.png');
+}
+
+#back-button {
+     -fx-background-image: url('/icons/tango/media-skip-backward.png');
+}
+
+#forward-button {
+     -fx-background-image: url('/icons/tango/media-skip-forward.png');
+}
+
+#mute-button {
+     -fx-background-image: url('/icons/tango/audio-volume-high.png');
+}
+
+#unmute-button {
+     -fx-background-image: url('/icons/tango/audio-volume-muted.png');
+}
+
+#track-title {
+     -fx-font-family: "Helvetica";
+     -fx-font-size: 14px;
+     -fx-font-weight: normal;
+     -fx-text-fill: #6F6F6F;
+}
+
+#progress-label {
+     -fx-font-family: "Helvetica";
+     -fx-font-size: 13px;
+     -fx-font-weight: normal;
+}
+
+#remaining-label {
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+}
+
+VBox {
+    /* http://blog.e-zest.com/gradients-in-javafx-2/ */
+    -fx-background-color: linear-gradient(#E9E9E9 20%, #efefef 50%, #dedede 100%);
+    -fx-border-radius: 5 5 5 5;
+    -fx-background-radius: 5 5 5 5;
+    -fx-border-width: 2px;
+    -fx-border-color: #D0D0D0;
+}
