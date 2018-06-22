@@ -1,11 +1,13 @@
 package com.marcfearby.widgets;
 
+import com.marcfearby.interfaces.PlayerHandler;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import org.apache.commons.io.FileUtils;
 import java.io.IOException;
@@ -25,6 +27,7 @@ public class FilesTableController implements Initializable {
     @FXML private TableColumn<Path, String> colSize;
     @FXML private TableColumn<Path, String> colModified;
     @FXML private TableColumn<Path, String> colType;
+    private PlayerHandler playerHandler;
 
     private final Locale currentLocale = Locale.getDefault();
 
@@ -35,12 +38,24 @@ public class FilesTableController implements Initializable {
     }
 
 
-    public void init(Path directory) {
+    public void init(Path directory, PlayerHandler playerHandler) {
         selectFolder(directory);
+        this.playerHandler = playerHandler;
     }
 
 
     private void setupTable() {
+        table.setRowFactory(param -> {
+            TableRow<Path> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    Path p = row.getItem();
+                    playerHandler.playFile(p);
+                }
+            });
+            return row;
+        });
+
         colName.setCellValueFactory((TableColumn.CellDataFeatures<Path, String> param) -> {
             return new SimpleStringProperty(param.getValue().getFileName().toString());
         });

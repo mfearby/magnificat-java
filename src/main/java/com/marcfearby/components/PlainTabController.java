@@ -2,6 +2,7 @@ package com.marcfearby.components;
 
 import com.marcfearby.interfaces.FolderTreeHandler;
 import com.marcfearby.interfaces.PlainTabHandler;
+import com.marcfearby.interfaces.PlayerHandler;
 import com.marcfearby.interfaces.TabPaneHandler;
 import com.marcfearby.models.TabInfo;
 import com.marcfearby.widgets.FilesTableController;
@@ -18,6 +19,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
     @FXML private Tab tab;
     @FXML private TreeView tree;
     private TabPaneHandler tabPaneHandler;
+    private PlayerHandler playerHandler;
     @FXML private FolderTreeController treeController;
     @FXML private FilesTableController tableController;
     private TabInfo info;
@@ -36,16 +38,17 @@ public class PlainTabController extends AbstractTabController implements FolderT
     }
 
 
-    public void init(TabInfo info, TabPaneHandler tabPaneHandler) {
+    public void init(TabInfo info, TabPaneHandler tabPaneHandler, PlayerHandler playerHandler) {
         this.tabPaneHandler = tabPaneHandler;
         this.info = info;
+        this.playerHandler = playerHandler;
 
         // Save before init() which triggers saveTabInfos() & overrides it with getRoot() before expandPath() below
         String selectedTreePath = info.getSelectedTreePath();
         boolean expanded = info.getExpanded();
 
         treeController.init(info.getRoot(), this, this);
-        tableController.init(info.getRoot());
+        tableController.init(info.getRoot(), playerHandler);
 
         tab.setText(getTabTitle());
 
@@ -56,7 +59,6 @@ public class PlainTabController extends AbstractTabController implements FolderT
 
     /**
      * Received from the TreeView child component whenever a new folder is selected
-     * @param item
      */
     @Override
     public void selectTreePath(TreeItem<Path> item) {

@@ -7,28 +7,27 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox fx:id="player" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0" minWidth="0" prefHeight="60.0" prefWidth="800.0" spacing="5.0" stylesheets="@PlayerView.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.marcfearby.widgets.PlayerController">
+<HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0" minWidth="0" prefHeight="60.0" prefWidth="800.0" spacing="5.0" stylesheets="@PlayerView.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.marcfearby.widgets.PlayerController">
    <children>
-       <Button id="play-button" fx:id="playButton" accessibleText="Play" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" />
-       <Button id="pause-button" fx:id="pauseButton" accessibleText="Pause" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" />
-       <Button id="back-button" fx:id="backButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+       <Button fx:id="playPauseButton" accessibleText="Play" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" onAction="#togglePlayPause" prefHeight="35.0" prefWidth="35.0" />
+       <Button id="back-button" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#goBack" prefHeight="30.0" prefWidth="30.0">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin></Button>
-       <Button id="stop-button" fx:id="stopButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" />
-       <Button id="forward-button" fx:id="forwardButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" />
-       <Label id="progress-label" fx:id="progressLabel" text="0:00">
+       <Button id="stop-button" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#stopPlaying" prefHeight="30.0" prefWidth="30.0" />
+       <Button id="forward-button" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#goForward" prefHeight="30.0" prefWidth="30.0" />
+       <Label id="progress-label" fx:id="progressLabel" minWidth="35.0" prefWidth="35.0" text="00:00">
          <HBox.margin>
             <Insets left="7.0" />
          </HBox.margin></Label>
       <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
          <children>
-            <Label id="track-title" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Track Name" textAlignment="CENTER">
+            <Label id="track-title" fx:id="trackTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" text="---" textAlignment="CENTER">
                <VBox.margin>
                   <Insets bottom="7.0" />
                </VBox.margin>
             </Label>
-            <Slider />
+            <Slider fx:id="timeSlider" onMouseClicked="#timeSliderMouseClicked" />
          </children>
          <opaqueInsets>
             <Insets />
@@ -40,12 +39,11 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </HBox.margin>
       </VBox>
-      <Label id="remaining-label" fx:id="remainingLabel" text="0:00"><HBox.margin>
+      <Label id="remaining-label" fx:id="remainingLabel" minWidth="40.0" prefWidth="40.0" text="-00:00"><HBox.margin>
           <Insets right="7.0" />
       </HBox.margin></Label>
-      <Button id="mute-button" fx:id="muteButton" accessibleText="Mute" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" />
-      <Button id="unmute-button" fx:id="unmuteButton" accessibleText="Unmute" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" />
-      <Slider maxWidth="100.0">
+      <Button fx:id="soundButton" accessibleText="Mute" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="30.0" prefWidth="30.0" />
+      <Slider fx:id="volumeSlider" maxWidth="100.0" minWidth="100.0" minorTickCount="2" onMouseClicked="#volumeSliderMouseClicked" prefWidth="100.0" showTickMarks="true" snapToTicks="true" value="100.0">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>

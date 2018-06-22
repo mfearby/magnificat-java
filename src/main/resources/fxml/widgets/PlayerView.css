@@ -7,14 +7,6 @@ Button {
     -fx-background-position: center;
 }
 
-#play-button {
-     -fx-background-image: url('/icons/tango/media-playback-start.png');
-}
-
-#pause-button {
-    -fx-background-image: url('/icons/tango/media-playback-pause.png');
-}
-
 #stop-button {
     -fx-background-image: url('/icons/tango/media-playback-stop.png');
 }
@@ -25,14 +17,6 @@ Button {
 
 #forward-button {
      -fx-background-image: url('/icons/tango/media-skip-forward.png');
-}
-
-#mute-button {
-     -fx-background-image: url('/icons/tango/audio-volume-high.png');
-}
-
-#unmute-button {
-     -fx-background-image: url('/icons/tango/audio-volume-muted.png');
 }
 
 #track-title {

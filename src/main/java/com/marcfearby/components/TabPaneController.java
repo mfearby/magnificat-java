@@ -1,5 +1,6 @@
 package com.marcfearby.components;
 
+import com.marcfearby.interfaces.PlayerHandler;
 import com.marcfearby.interfaces.TabPaneHandler;
 import com.marcfearby.utils.Global;
 import com.marcfearby.utils.Settings;
@@ -16,10 +17,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class TabPaneController implements Initializable, TabPaneHandler {
+public class TabPaneController implements TabPaneHandler {
 
     @FXML private TabPane tabs;
     private ArrayList<AbstractTabController> tabControllers;
+    private PlayerHandler playerHandler;
 
 
     public TabPaneController() {
@@ -27,7 +29,9 @@ public class TabPaneController implements Initializable, TabPaneHandler {
     }
 
 
-    public void initialize(URL location, ResourceBundle resources) {
+    public void init(PlayerHandler playerHandler) {
+        this.playerHandler = playerHandler;
+
         ArrayList<TabInfo> tabs = Settings.getTabs();
 
         // Restore the user's previous tabs
@@ -57,7 +61,7 @@ public class TabPaneController implements Initializable, TabPaneHandler {
             PlainTabController ctrl = loader.getController();
 
             tabControllers.add(ctrl);
-            ctrl.init(info, this);
+            ctrl.init(info, this, playerHandler);
 
             tab.setOnCloseRequest(event -> {
                 // Don't allow the last tab to be closed
