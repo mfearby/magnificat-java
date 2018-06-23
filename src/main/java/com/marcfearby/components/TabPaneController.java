@@ -57,17 +57,17 @@ public class TabPaneController implements TabPaneHandler {
             URL location = getClass().getResource("/fxml/components/PlainTabView.fxml");
             FXMLLoader loader = new FXMLLoader(location, bundle);
             Tab tab = loader.load();
-            PlainTabController ctrl = loader.getController();
+            PlainTabController tabController = loader.getController();
 
-            tabControllers.add(ctrl);
-            ctrl.init(info, this, playerHandler);
+            tabControllers.add(tabController);
+            tabController.init(info, this, playerHandler);
 
             tab.setOnCloseRequest(event -> {
                 // Don't allow the last tab to be closed
                 if (tabs.getTabs().size() == 1) {
                     event.consume();
                 } else {
-                    tabControllers.remove(ctrl);
+                    tabControllers.remove(tabController);
                     saveTabInfos();
                 }
             });

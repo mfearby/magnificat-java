@@ -1,7 +1,6 @@
 package com.marcfearby.widgets;
 
 import com.marcfearby.interfaces.PlainTabHandler;
-import com.marcfearby.interfaces.PlayerHandler;
 import com.marcfearby.interfaces.PlaylistProvider;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -29,7 +28,6 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     @FXML private TableColumn<Path, String> colSize;
     @FXML private TableColumn<Path, String> colModified;
     @FXML private TableColumn<Path, String> colType;
-    private PlayerHandler playerHandler;
     private PlainTabHandler tabHandler;
     private int currentIndex = -1;
     private final Locale currentLocale = Locale.getDefault();
@@ -41,9 +39,8 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     }
 
 
-    public void init(Path directory, PlayerHandler playerHandler, PlainTabHandler tabHandler) {
+    public void init(Path directory, PlainTabHandler tabHandler) {
         selectFolder(directory);
-        this.playerHandler = playerHandler;
         this.tabHandler = tabHandler;
     }
 
@@ -55,8 +52,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
                     this.currentIndex = row.getIndex() - 1;
-                    playerHandler.setPlaylistProvider(this);
-                    tabHandler.becomePlaylistProvider();
+                    tabHandler.becomePlaylistProvider(true);
                 }
             });
             return row;

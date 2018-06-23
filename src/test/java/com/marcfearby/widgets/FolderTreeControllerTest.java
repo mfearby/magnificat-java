@@ -60,7 +60,7 @@ public class FolderTreeControllerTest extends ApplicationTest {
                 receivedPath = path;
             }
             @Override
-            public void becomePlaylistProvider() {
+            public void becomePlaylistProvider(boolean startPlaying) {
             }
         }
 

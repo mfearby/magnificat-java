@@ -8,6 +8,6 @@ public interface PlainTabHandler {
 
     void addTab(Path path);
 
-    void becomePlaylistProvider();
+    void becomePlaylistProvider(boolean startPlaying);
 
 }

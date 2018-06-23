@@ -85,7 +85,11 @@ public class PlayerController implements Initializable, PlayerHandler {
 
     @FXML
     public void togglePlayPause(ActionEvent event) {
-        if (mp == null) return;
+        // Most likely the user just started the app and pressed Play and didn't double-click on a track
+        if (mp == null) {
+            playNext();
+            return;
+        }
 
         Status status = mp.getStatus();
         if (status == Status.UNKNOWN  || status == Status.HALTED) {
@@ -98,6 +102,7 @@ public class PlayerController implements Initializable, PlayerHandler {
                 mp.seek(mp.getStartTime());
                 atEndOfMedia = false;
             }
+
             mp.play();
             this.setPlayingIcon(true);
         } else {
@@ -144,9 +149,10 @@ public class PlayerController implements Initializable, PlayerHandler {
 
 
     @Override
-    public void setPlaylistProvider(PlaylistProvider playlistProvider) {
+    public void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying) {
         this.playlistProvider = playlistProvider;
-        playNext();
+        if (startPlaying)
+            playNext();
     }
 
 
