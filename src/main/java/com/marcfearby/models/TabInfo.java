@@ -11,6 +11,7 @@ public class TabInfo {
     private boolean active;
     private String selectedTreePath = null;
     private boolean expanded = false;
+    private boolean isPlaylistProvider = false;
 
     public TabInfo(TabType type, Path root, boolean active) {
         this.type = type;
@@ -26,7 +27,6 @@ public class TabInfo {
     public Path getRoot() {
         return root;
     }
-
     public void setRoot(Path root) {
         this.root = root;
     }
@@ -35,7 +35,6 @@ public class TabInfo {
     public boolean getActive() {
         return active;
     }
-
     public void setActive(boolean active) {
         this.active = active;
     }
@@ -44,7 +43,6 @@ public class TabInfo {
     public String getSelectedTreePath() {
         return this.selectedTreePath;
     }
-
     public void setSelectedTreePath(String path) {
         this.selectedTreePath = path;
     }
@@ -53,9 +51,16 @@ public class TabInfo {
     public boolean getExpanded() {
         return this.expanded;
     }
-
     public void setExpanded(boolean expanded) {
         this.expanded = expanded;
+    }
+
+
+    public boolean getIsPlaylistProvider() {
+        return this.isPlaylistProvider;
+    }
+    public void setIsPlaylistProvider(boolean isProvider) {
+        this.isPlaylistProvider = isProvider;
     }
 
 }

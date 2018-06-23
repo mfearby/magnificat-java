@@ -1,6 +1,8 @@
 package com.marcfearby.widgets;
 
+import com.marcfearby.interfaces.PlainTabHandler;
 import com.marcfearby.interfaces.PlayerHandler;
+import com.marcfearby.interfaces.PlaylistProvider;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +22,7 @@ import java.text.DateFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class FilesTableController implements Initializable {
+public class FilesTableController implements Initializable, PlaylistProvider {
 
     @FXML private TableView<Path> table;
     @FXML private TableColumn<Path, String> colName;
@@ -28,7 +30,8 @@ public class FilesTableController implements Initializable {
     @FXML private TableColumn<Path, String> colModified;
     @FXML private TableColumn<Path, String> colType;
     private PlayerHandler playerHandler;
-
+    private PlainTabHandler tabHandler;
+    private int currentIndex = -1;
     private final Locale currentLocale = Locale.getDefault();
 
 
@@ -38,19 +41,22 @@ public class FilesTableController implements Initializable {
     }
 
 
-    public void init(Path directory, PlayerHandler playerHandler) {
+    public void init(Path directory, PlayerHandler playerHandler, PlainTabHandler tabHandler) {
         selectFolder(directory);
         this.playerHandler = playerHandler;
+        this.tabHandler = tabHandler;
     }
 
 
+    @SuppressWarnings("CodeBlock2Expr")
     private void setupTable() {
         table.setRowFactory(param -> {
             TableRow<Path> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    Path p = row.getItem();
-                    playerHandler.playFile(p);
+                    this.currentIndex = row.getIndex() - 1;
+                    playerHandler.setPlaylistProvider(this);
+                    tabHandler.becomePlaylistProvider();
                 }
             });
             return row;
@@ -96,6 +102,37 @@ public class FilesTableController implements Initializable {
     }
 
 
+    @Override
+    public Path getNextTrack() {
+        ObservableList<Path> items = table.getItems();
+
+        if (items.isEmpty())
+            return null;
+
+        int i = currentIndex + 1 < items.size() ? ++currentIndex : currentIndex;
+        return items.get(i);
+    }
+
+
+    @Override
+    public Path getPreviousTrack() {
+        ObservableList<Path> items = table.getItems();
+
+        if (items.isEmpty())
+            return null;
+
+        int i = currentIndex - 1 >= 0 ? --currentIndex : currentIndex;
+        return items.get(i);
+    }
+
+
+    @Override
+    public Path getRandomTrack() {
+        // todo implement random track selection
+        return null;
+    }
+
+
     public void selectFolder(Path directory) {
         ObservableList<Path> data = FXCollections.observableArrayList();
 
@@ -113,5 +150,6 @@ public class FilesTableController implements Initializable {
 
         table.setItems(data);
     }
+
 
 }

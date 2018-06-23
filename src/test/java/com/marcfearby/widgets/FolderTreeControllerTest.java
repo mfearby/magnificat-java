@@ -59,6 +59,9 @@ public class FolderTreeControllerTest extends ApplicationTest {
             public void addTab(Path path) {
                 receivedPath = path;
             }
+            @Override
+            public void becomePlaylistProvider() {
+            }
         }
 
         FileSystem fs = Global.getFileSystem();

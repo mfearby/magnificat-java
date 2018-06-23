@@ -26,6 +26,7 @@ public class Settings {
     private static final String KEY_ACTIVE = "active";
     private static final String KEY_SELECTED_PATH = "selected";
     private static final String KEY_EXPANDED_PATH = "expanded";
+    private static final String KEY_PLAYLIST_PROVIDER = "playlistprovider";
 
     public static boolean appLoaded = false;
 
@@ -37,6 +38,7 @@ public class Settings {
     }
 
 
+    @SuppressWarnings("WeakerAccess")
     public static ArrayList<TabInfo> getTabsFromSettings(String settings) {
         ArrayList<TabInfo> tabs = new ArrayList<>();
 
@@ -63,6 +65,9 @@ public class Settings {
 
                     boolean expanded = Boolean.parseBoolean(ini.get(section, KEY_EXPANDED_PATH));
                     info.setExpanded(expanded);
+
+                    boolean handler = Boolean.parseBoolean(ini.get(section, KEY_PLAYLIST_PROVIDER));
+                    info.setIsPlaylistProvider(handler);
 
                     tabs.add(info);
                 }
@@ -91,6 +96,7 @@ public class Settings {
     }
 
 
+    @SuppressWarnings("WeakerAccess")
     public static StringWriter getNewSettings(List<TabInfo> tabs) {
         StringWriter contents = new StringWriter();
 
@@ -106,6 +112,7 @@ public class Settings {
                 ini.put(section, KEY_ACTIVE, info.getActive());
                 ini.put(section, KEY_SELECTED_PATH, info.getSelectedTreePath());
                 ini.put(section, KEY_EXPANDED_PATH, info.getExpanded());
+                ini.put(section, KEY_PLAYLIST_PROVIDER, info.getIsPlaylistProvider());
             }
 
             ini.store(contents);

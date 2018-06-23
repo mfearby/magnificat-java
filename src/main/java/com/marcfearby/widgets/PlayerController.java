@@ -1,6 +1,7 @@
 package com.marcfearby.widgets;
 
 import com.marcfearby.interfaces.PlayerHandler;
+import com.marcfearby.interfaces.PlaylistProvider;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,6 +41,7 @@ public class PlayerController implements Initializable, PlayerHandler {
     private boolean repeat = false;
     private boolean atEndOfMedia = false;
     private double volumeBeforeMuted = 1.0;
+    private PlaylistProvider playlistProvider = null;
 
 
     // See: https://docs.oracle.com/javase/8/javafx/media-tutorial/playercontrol.htm
@@ -105,19 +107,6 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
-    @FXML
-    public void goBack(ActionEvent event) {
-        // TODO Implement back method
-    }
-
-
-
-    @FXML
-    public void goForward(ActionEvent event) {
-        // TODO Implement forward method
-    }
-
-
     // This button is being used to kick off the playing of a track until I've finished setting up that functionality
     @FXML
     private void stopPlaying(ActionEvent event) {
@@ -135,8 +124,34 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
+    @FXML
+    public void goBack(ActionEvent event) {
+        Path track = playlistProvider.getPreviousTrack();
+        playFile(track);
+    }
+
+
+    @FXML
+    public void goForward(ActionEvent event) {
+        playNext();
+    }
+
+
+    private void playNext() {
+        Path track = playlistProvider.getNextTrack();
+        playFile(track);
+    }
+
+
     @Override
-    public void playFile(Path track) {
+    public void setPlaylistProvider(PlaylistProvider playlistProvider) {
+        this.playlistProvider = playlistProvider;
+        playNext();
+    }
+
+
+
+    private void playFile(Path track) {
         // Kill the previous object if a track is currently playing/paused
         if (mp != null)
             mp.dispose();
@@ -256,5 +271,6 @@ public class PlayerController implements Initializable, PlayerHandler {
         slider.setValue(value);
         slider.setValueChanging(false);
     }
+
 
 }

@@ -38,6 +38,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
     }
 
 
+    @SuppressWarnings("WeakerAccess")
     public void init(TabInfo info, TabPaneHandler tabPaneHandler, PlayerHandler playerHandler) {
         this.tabPaneHandler = tabPaneHandler;
         this.info = info;
@@ -48,7 +49,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
         boolean expanded = info.getExpanded();
 
         treeController.init(info.getRoot(), this, this);
-        tableController.init(info.getRoot(), playerHandler);
+        tableController.init(info.getRoot(), playerHandler, this);
 
         tab.setText(getTabTitle());
 
@@ -89,6 +90,12 @@ public class PlainTabController extends AbstractTabController implements FolderT
     @Override
     public void changeTabRoot(Path path) {
         info.setRoot(path);
+        saveTabInfos();
+    }
+
+
+    public void becomePlaylistProvider() {
+        info.setIsPlaylistProvider(true);
         saveTabInfos();
     }
 
