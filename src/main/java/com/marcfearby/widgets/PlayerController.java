@@ -187,6 +187,7 @@ public class PlayerController implements Initializable, PlayerHandler {
             if (!repeat) {
                 atEndOfMedia = true;
             }
+            playNext();
         });
     }
 

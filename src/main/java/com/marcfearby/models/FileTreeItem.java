@@ -76,11 +76,12 @@ public class FileTreeItem<T> extends TreeItem<Path> implements Comparable<FileTr
                         children.add(node);
                     }
                 }
+
             } catch (IOException e) {
                 System.out.println("FileTreeItem.buildChildren(): " + e);
             }
 
-            return children;
+            return children.sorted();
         }
 
         return FXCollections.emptyObservableList();

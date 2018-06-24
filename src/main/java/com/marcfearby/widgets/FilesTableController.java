@@ -5,6 +5,7 @@ import com.marcfearby.interfaces.PlaylistProvider;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -105,6 +106,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         if (items.isEmpty())
             return null;
 
+        // todo - this needs work now that the user can change the sort order in the table
         int i = currentIndex + 1 < items.size() ? ++currentIndex : currentIndex;
         return items.get(i);
     }
@@ -117,6 +119,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         if (items.isEmpty())
             return null;
 
+        // todo - this needs work now that the user can change the sort order in the table
         int i = currentIndex - 1 >= 0 ? --currentIndex : currentIndex;
         return items.get(i);
     }
@@ -144,7 +147,11 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             }
         }
 
-        table.setItems(data);
+        // Created a sorted list (which is also sorted by default)
+        SortedList<Path> sortedData = new SortedList<>(data.sorted());
+        // Allow the user can change the sort order themselves with the column headers
+        sortedData.comparatorProperty().bind(table.comparatorProperty());
+        table.setItems(sortedData);
     }
 
 
