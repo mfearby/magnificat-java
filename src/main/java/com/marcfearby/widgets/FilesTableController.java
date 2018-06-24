@@ -30,7 +30,8 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     @FXML private TableColumn<Path, String> colModified;
     @FXML private TableColumn<Path, String> colType;
     private PlainTabHandler tabHandler;
-    private int currentIndex = -1;
+    private Path currentTrack = null;
+    private boolean currentTrackWasChosen = false;
     private final Locale currentLocale = Locale.getDefault();
 
 
@@ -52,7 +53,9 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             TableRow<Path> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    this.currentIndex = row.getIndex() - 1;
+                    this.currentTrack = row.getItem();
+                    currentTrackWasChosen = true;
+                    // This will trigger the player to call getNextTrack() and play whatever it gets
                     tabHandler.becomePlaylistProvider(true);
                 }
             });
@@ -106,9 +109,18 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         if (items.isEmpty())
             return null;
 
-        // todo - this needs work now that the user can change the sort order in the table
-        int i = currentIndex + 1 < items.size() ? ++currentIndex : currentIndex;
-        return items.get(i);
+        // If the user double-clicked on a row, return that instead of finding the next track
+        if (currentTrackWasChosen) {
+            System.out.println("Returning chosen track");
+            currentTrackWasChosen = false;
+            return currentTrack;
+        }
+
+        // Get the index of the current track (respective of the current sort in the TableView)
+        int currentIndex = items.indexOf(currentTrack);
+        int nextIndex = currentIndex + 1 < items.size() ? ++currentIndex : currentIndex;
+        currentTrack = items.get(nextIndex);
+        return currentTrack;
     }
 
 
@@ -119,9 +131,10 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         if (items.isEmpty())
             return null;
 
-        // todo - this needs work now that the user can change the sort order in the table
-        int i = currentIndex - 1 >= 0 ? --currentIndex : currentIndex;
-        return items.get(i);
+        int currentIndex = items.indexOf(currentTrack);
+        int previousIndex = currentIndex - 1 >= 0 ? --currentIndex : currentIndex;
+        currentTrack = items.get(previousIndex);
+        return currentTrack;
     }
 
 
