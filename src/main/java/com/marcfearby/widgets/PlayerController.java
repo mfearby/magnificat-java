@@ -2,6 +2,7 @@ package com.marcfearby.widgets;
 
 import com.marcfearby.interfaces.PlayerHandler;
 import com.marcfearby.interfaces.PlaylistProvider;
+import com.marcfearby.interfaces.TabPaneHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,6 +36,7 @@ public class PlayerController implements Initializable, PlayerHandler {
     private final Image mutedImage = new Image(getClass().getResourceAsStream("/icons/tango/audio-volume-muted.png"));
     private final Image unmutedImage = new Image(getClass().getResourceAsStream("/icons/tango/audio-volume-high.png"));
 
+    private TabPaneHandler tabPaneHandler = null;
     private boolean audible = false;
     private MediaPlayer mp;
     private Duration duration;
@@ -68,6 +70,11 @@ public class PlayerController implements Initializable, PlayerHandler {
                 setAudibleIcon(volume > 0);
             }
         });
+    }
+
+
+    public void init(TabPaneHandler tabPaneHandler) {
+        this.tabPaneHandler = tabPaneHandler;
     }
 
 
@@ -112,7 +119,6 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
-    // This button is being used to kick off the playing of a track until I've finished setting up that functionality
     @FXML
     private void stopPlaying(ActionEvent event) {
         if (mp == null) return;
@@ -131,7 +137,7 @@ public class PlayerController implements Initializable, PlayerHandler {
 
     @FXML
     public void goBack(ActionEvent event) {
-        Path track = playlistProvider.getPreviousTrack();
+        Path track = getPlaylistProvider().getPreviousTrack();
         playFile(track);
     }
 
@@ -143,7 +149,7 @@ public class PlayerController implements Initializable, PlayerHandler {
 
 
     private void playNext() {
-        Path track = playlistProvider.getNextTrack();
+        Path track = getPlaylistProvider().getNextTrack();
         playFile(track);
     }
 
@@ -156,7 +162,24 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
+    /**
+     * Get the current PlaylistProvider; if there is none, ask the TabPane to get the
+     * active/selected tab to becomePlaylistProvider()
+     * @return The current PlaylistProvider
+     */
+    private PlaylistProvider getPlaylistProvider() {
+        // This will make sure that the active tab becomes the playlist provider
+        if (playlistProvider == null)
+            tabPaneHandler.activatePlaylistProvider();
 
+        return playlistProvider;
+    }
+
+
+    /**
+     * Start playing a new track (and stop playing the current track, if any)
+     * @param track The path to the new track to play
+     */
     private void playFile(Path track) {
         // Kill the previous object if a track is currently playing/paused
         if (mp != null)
@@ -182,8 +205,6 @@ public class PlayerController implements Initializable, PlayerHandler {
         mp.setCycleCount(repeat ? MediaPlayer.INDEFINITE : 1);
 
         mp.setOnEndOfMedia(() -> {
-            // TODO Request next track to play and move on
-            System.out.println("End of track reached!");
             if (!repeat) {
                 atEndOfMedia = true;
             }
@@ -192,6 +213,11 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
+    /**
+     * Toggle the main play/pause icon according to the user's action
+     * @param playing True to show the paused icon (i.e., it's currently playing),
+     *                False to show the Play icon (i.e., it's currently not playing)
+     */
     private void setPlayingIcon(boolean playing) {
         // Icon displayed should be opposite (if playing, then show pause, and vice versa)
         Image img = playing ? pauseImage : playImage;
@@ -199,6 +225,10 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
+    /**
+     * Toggle the mute icon according to the user's action
+     * @param audible False to show the muted icon, True to show a normal sound icon
+     */
     private void setAudibleIcon(boolean audible) {
         this.audible = audible;
         Image img = audible ? unmutedImage : mutedImage;
@@ -211,6 +241,9 @@ public class PlayerController implements Initializable, PlayerHandler {
 //    }
 
 
+    /**
+     * Update the sliders according to current values from the MediaPlayer
+     */
     private void updateValues() {
         Platform.runLater(() -> {
             Duration currentTime = mp.getCurrentTime();
@@ -228,6 +261,11 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
+    /**
+     * Update the labels in the player to show the current progress in the MediaPlayer
+     * @param elapsed The time index in the track at which the player is currently located
+     * @param duration The amount of time remaining until the track has finished playing
+     */
     private void updateLabels(Duration elapsed, Duration duration) {
         int intElapsed = (int)Math.floor(elapsed.toSeconds());
         int elapsedHours = intElapsed / (60 * 60);

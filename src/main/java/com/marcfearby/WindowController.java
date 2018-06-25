@@ -24,6 +24,8 @@ public class WindowController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Pass a reference to the player so that tabs can call playFile()
         tabsController.init(playerController);
+        // Pass a reference to the tabs handler so that the player can ask for a PlaylistProvider if it's null
+        playerController.init(tabsController);
     }
 
 

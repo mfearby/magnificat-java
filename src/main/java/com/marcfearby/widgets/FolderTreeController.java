@@ -118,6 +118,10 @@ public class FolderTreeController {
     }
 
 
+    /**
+     * Handle the expand and collapse events for TreeView nodes
+     * @param event The TreeItem.TreeModificationEvent object
+     */
     @SuppressWarnings("unchecked")
     private void branchToggled(TreeItem.TreeModificationEvent event)
     {
@@ -130,6 +134,11 @@ public class FolderTreeController {
     }
 
 
+    /**
+     * Expand the relevant TreeView nodes to reveal the given sub-folder (or as far down as it can)
+     * @param target The Path to the sub-folder
+     * @param expanded Whether or not the sub-folder node should be expanded (true) or collapsed (false)
+     */
     public void expandPath(String target, boolean expanded) {
         FileTreeItem<Path> root = (FileTreeItem<Path>)tree.getRoot();
         FileTreeItem<Path> found = root.expandPath(target, expanded);

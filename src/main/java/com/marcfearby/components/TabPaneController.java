@@ -21,7 +21,7 @@ public class TabPaneController implements TabPaneHandler {
     @FXML private TabPane tabs;
     private ArrayList<AbstractTabController> tabControllers;
     private PlayerHandler playerHandler;
-
+    private AbstractTabController activeTabController;
 
     public TabPaneController() {
         tabControllers = new ArrayList<>();
@@ -97,6 +97,18 @@ public class TabPaneController implements TabPaneHandler {
                 .collect(Collectors.toList());
 
         Settings.saveTabs(tabs);
+    }
+
+
+    @Override
+    public void setActiveTabController(AbstractTabController controller) {
+        this.activeTabController = controller;
+    }
+
+
+    @Override
+    public void activatePlaylistProvider() {
+        activeTabController.becomePlaylistProvider(false);
     }
 
 }

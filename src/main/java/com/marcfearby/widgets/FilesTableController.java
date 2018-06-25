@@ -111,7 +111,6 @@ public class FilesTableController implements Initializable, PlaylistProvider {
 
         // If the user double-clicked on a row, return that instead of finding the next track
         if (currentTrackWasChosen) {
-            System.out.println("Returning chosen track");
             currentTrackWasChosen = false;
             return currentTrack;
         }
@@ -145,6 +144,10 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     }
 
 
+    /**
+     * Called whenever a new folder is selected in the TreeView
+     * @param directory The path containing music files from which the TableView will be repopulated
+     */
     public void selectFolder(Path directory) {
         ObservableList<Path> data = FXCollections.observableArrayList();
 

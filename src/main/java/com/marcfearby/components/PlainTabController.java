@@ -1,9 +1,6 @@
 package com.marcfearby.components;
 
-import com.marcfearby.interfaces.FolderTreeHandler;
-import com.marcfearby.interfaces.PlainTabHandler;
-import com.marcfearby.interfaces.PlayerHandler;
-import com.marcfearby.interfaces.TabPaneHandler;
+import com.marcfearby.interfaces.*;
 import com.marcfearby.models.TabInfo;
 import com.marcfearby.widgets.FilesTableController;
 import com.marcfearby.widgets.FolderTreeController;
@@ -29,12 +26,19 @@ public class PlainTabController extends AbstractTabController implements FolderT
     }
 
 
+    /**
+     * Fires when the selected/active tab in the TabPane changes
+     */
     @FXML
     public void onSelectionChanged(Event e) {
         info.setActive(tab.isSelected());
+
         // Save the tabs only for the active tab (the deactivated tab's event will be called before this one)
         if (tab.isSelected())
             saveTabInfos();
+
+        // Because TabPane.getSelectionModel().getSelectedItem() doesn't let me get the controller
+        tabPaneHandler.setActiveTabController(this);
     }
 
 
@@ -62,9 +66,6 @@ public class PlainTabController extends AbstractTabController implements FolderT
     }
 
 
-    /**
-     * Received from the TreeView child component whenever a new folder is selected
-     */
     @Override
     public void selectTreePath(TreeItem<Path> item) {
         tableController.selectFolder(item.getValue());
@@ -75,13 +76,6 @@ public class PlainTabController extends AbstractTabController implements FolderT
     @Override
     public void toggleSelectedTreePath(TreeItem<Path> item) {
         saveSelectedItem(item);
-    }
-
-
-    private void saveSelectedItem(TreeItem<Path> item) {
-        info.setSelectedTreePath(item.getValue().toString());
-        info.setExpanded(item.isExpanded());
-        saveTabInfos();
     }
 
 
@@ -98,6 +92,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
     }
 
 
+    @Override
     public void becomePlaylistProvider(boolean startPlaying) {
         // Take over the player and set the current track to be tableController.getNextTrack()
         playerHandler.setPlaylistProvider(tableController, startPlaying);
@@ -106,18 +101,34 @@ public class PlainTabController extends AbstractTabController implements FolderT
     }
 
 
-    private void saveTabInfos() {
-        tabPaneHandler.saveTabInfos();
-    }
-
-
+    @Override
     public TabInfo getTabInfo() {
         return info;
     }
 
 
+    @Override
     public String getTabTitle() {
         return info.getRoot().getFileName().toString();
+    }
+
+
+    /**
+     * Save information about the selected folder node in the TreeView
+     * @param item The folder item from the TreeView
+     */
+    private void saveSelectedItem(TreeItem<Path> item) {
+        info.setSelectedTreePath(item.getValue().toString());
+        info.setExpanded(item.isExpanded());
+        saveTabInfos();
+    }
+
+
+    /**
+     * Save all the information about this tab to the settings file
+     */
+    private void saveTabInfos() {
+        tabPaneHandler.saveTabInfos();
     }
 
 }
