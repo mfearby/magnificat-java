@@ -44,6 +44,13 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     public void init(Path directory, PlainTabHandler tabHandler) {
         selectFolder(directory);
         this.tabHandler = tabHandler;
+
+        // todo - Save user changes to the sorted column
+        // Show the user that the Name column is sorted in ascending order by default.
+        // The data is already sorted in selectFolder() below but that doesn't show the triangle.
+        colName.setSortType(TableColumn.SortType.ASCENDING);
+        table.getSortOrder().clear();
+        table.getSortOrder().add(colName);
     }
 
 
@@ -169,6 +176,5 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         sortedData.comparatorProperty().bind(table.comparatorProperty());
         table.setItems(sortedData);
     }
-
 
 }

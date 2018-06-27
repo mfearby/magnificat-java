@@ -1,16 +1,8 @@
 package com.marcfearby.components;
 
-import com.marcfearby.interfaces.PlaylistProvider;
 import com.marcfearby.models.TabInfo;
 
 abstract public class AbstractTabController {
-
-    /**
-     * Get the vital statistics for a tab
-     * @return Object containing all the particulars about a tab
-     */
-    abstract public TabInfo getTabInfo();
-
 
     /**
      * Get the title for this tab, based on the folder name (or search parameters for a FANCY tab in a future release)
@@ -24,5 +16,12 @@ abstract public class AbstractTabController {
      * @param startPlaying True to start playback immediately
      */
     abstract void becomePlaylistProvider(boolean startPlaying);
+
+
+    /**
+     * Set the tab to be coloured (indicating that it's the current PlaylistProvider)
+     * @param coloured True to highlight it with a colour, False to set it back to normal
+     */
+    abstract void setTabColoured(boolean coloured);
 
 }

@@ -24,7 +24,7 @@
          <children>
             <Label id="track-title" fx:id="trackTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" text="---" textAlignment="CENTER">
                <VBox.margin>
-                  <Insets bottom="7.0" />
+                  <Insets bottom="5.0" />
                </VBox.margin>
             </Label>
             <Slider fx:id="timeSlider" onMouseClicked="#timeSliderMouseClicked" />
@@ -43,7 +43,7 @@
           <Insets right="7.0" />
       </HBox.margin></Label>
       <Button fx:id="soundButton" accessibleText="Mute" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="30.0" prefWidth="30.0" />
-      <Slider fx:id="volumeSlider" maxWidth="100.0" minWidth="100.0" minorTickCount="2" onMouseClicked="#volumeSliderMouseClicked" prefWidth="100.0" showTickMarks="true" snapToTicks="true" value="100.0">
+      <Slider fx:id="volumeSlider" maxWidth="100.0" minWidth="100.0" minorTickCount="1" onMouseClicked="#volumeSliderMouseClicked" prefWidth="100.0" showTickMarks="true" value="100.0">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>

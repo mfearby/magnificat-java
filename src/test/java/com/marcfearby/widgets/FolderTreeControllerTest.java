@@ -35,7 +35,7 @@ public class FolderTreeControllerTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Global.isTesting = true;
+        Global.setTestMode();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/widgets/FolderTreeView.fxml"));
         tree = loader.load();
         ctrl = loader.getController();

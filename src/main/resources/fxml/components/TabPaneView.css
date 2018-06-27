@@ -1,0 +1,19 @@
+/*
+    https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html#tabpane
+*/
+
+.activeTab  {
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #B6D6E9);
+}
+
+.activeTab:hover  {
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #CCE5EC);
+}
+
+.inactiveTab  {
+    -fx-background-color: linear-gradient(to bottom, #FEFEFE, #E4E4E4);
+}
+
+.inactiveTab:hover {
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #EEEEEE);
+}

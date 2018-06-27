@@ -45,7 +45,6 @@ public class PlayerController implements Initializable, PlayerHandler {
     private double volumeBeforeMuted = 1.0;
     private PlaylistProvider playlistProvider = null;
 
-
     // See: https://docs.oracle.com/javase/8/javafx/media-tutorial/playercontrol.htm
 
     @Override
@@ -157,6 +156,7 @@ public class PlayerController implements Initializable, PlayerHandler {
     @Override
     public void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying) {
         this.playlistProvider = playlistProvider;
+
         if (startPlaying)
             playNext();
     }
@@ -190,6 +190,8 @@ public class PlayerController implements Initializable, PlayerHandler {
 
         mp.play();
         setPlayingIcon(true);
+        // Use the existing volume level for the new player object!
+        mp.setVolume(volumeSlider.getValue() / 100);
 
         String name = track.getFileName().toString();
         if (name.indexOf(".") > 0) name = name.substring(0, name.lastIndexOf("."));

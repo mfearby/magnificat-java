@@ -1,5 +1,7 @@
 package com.marcfearby.models;
 
+import com.marcfearby.components.AbstractTabController;
+
 import java.nio.file.Path;
 
 public class TabInfo {
@@ -12,6 +14,8 @@ public class TabInfo {
     private String selectedTreePath = null;
     private boolean expanded = false;
     private boolean isPlaylistProvider = false;
+    private AbstractTabController controller = null;
+
 
     public TabInfo(TabType type, Path root, boolean active) {
         this.type = type;
@@ -20,12 +24,20 @@ public class TabInfo {
     }
 
     public TabType getType() {
-        return type;
+        return this.type;
+    }
+
+
+    public AbstractTabController getController() {
+        return this.controller;
+    }
+    public void setController(AbstractTabController controller) {
+        this.controller = controller;
     }
 
 
     public Path getRoot() {
-        return root;
+        return this.root;
     }
     public void setRoot(Path root) {
         this.root = root;

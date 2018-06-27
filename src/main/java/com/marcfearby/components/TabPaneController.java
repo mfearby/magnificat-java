@@ -3,8 +3,8 @@ package com.marcfearby.components;
 import com.marcfearby.interfaces.PlayerHandler;
 import com.marcfearby.interfaces.TabPaneHandler;
 import com.marcfearby.utils.Global;
-import com.marcfearby.utils.Settings;
 import com.marcfearby.models.TabInfo;
+import com.marcfearby.utils.Settings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
@@ -12,26 +12,25 @@ import javafx.scene.control.TabPane;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class TabPaneController implements TabPaneHandler {
 
     @FXML private TabPane tabs;
-    private ArrayList<AbstractTabController> tabControllers;
     private PlayerHandler playerHandler;
     private AbstractTabController activeTabController;
+    private boolean appLoaded;
+    private ArrayList<TabInfo> infos;
 
     public TabPaneController() {
-        tabControllers = new ArrayList<>();
+        infos = new ArrayList<>();
     }
 
 
     public void init(PlayerHandler playerHandler) {
         this.playerHandler = playerHandler;
 
-        ArrayList<TabInfo> tabs = Settings.getTabs();
+        ArrayList<TabInfo> tabs = Settings.getInstance().getTabs();
 
         // Restore the user's previous tabs
         if (tabs.size() > 0) {
@@ -44,8 +43,8 @@ public class TabPaneController implements TabPaneHandler {
             addTab(home);
         }
 
-        // Set this to true so that settings can be saved from now on
-        Settings.appLoaded = true;
+        // Settings can be saved from now on
+        appLoaded = true;
     }
 
 
@@ -59,7 +58,9 @@ public class TabPaneController implements TabPaneHandler {
             Tab tab = loader.load();
             PlainTabController tabController = loader.getController();
 
-            tabControllers.add(tabController);
+            info.setController(tabController);
+            infos.add(info);
+
             tabController.init(info, this, playerHandler);
 
             tab.setOnCloseRequest(event -> {
@@ -67,7 +68,7 @@ public class TabPaneController implements TabPaneHandler {
                 if (tabs.getTabs().size() == 1) {
                     event.consume();
                 } else {
-                    tabControllers.remove(tabController);
+                    infos.remove(info);
                     saveTabInfos();
                 }
             });
@@ -91,12 +92,21 @@ public class TabPaneController implements TabPaneHandler {
 
 
     @Override
-    public void saveTabInfos() {
-        List<TabInfo> tabs = tabControllers.stream()
-                .map(AbstractTabController::getTabInfo)
-                .collect(Collectors.toList());
+    public void removeColourFromOtherTabInfos(TabInfo info) {
+        for (TabInfo obj : infos) {
+            if (obj != info) {
+                obj.setIsPlaylistProvider(false);
+                obj.getController().setTabColoured(false);
+            }
+        }
+    }
 
-        Settings.saveTabs(tabs);
+
+    @Override
+    public void saveTabInfos() {
+        // Don't save whilst the app is initialising (and triggering tab onSelectionChanged events)
+        if (appLoaded)
+            Settings.getInstance().saveTabs(infos);
     }
 
 

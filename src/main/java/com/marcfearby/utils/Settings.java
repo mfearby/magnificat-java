@@ -6,8 +6,6 @@ import net.harawata.appdirs.AppDirsFactory;
 import org.ini4j.Wini;
 import java.io.*;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,6 +18,22 @@ import java.util.List;
  */
 public class Settings {
 
+    private static Settings instance;
+
+    private Settings() { }
+
+    static {
+        try {
+            instance = new Settings();
+        } catch(Exception e) {
+            throw new RuntimeException("Exception occured whilst trying to create the 'Settings' singleton instance");
+        }
+    }
+
+    public static Settings getInstance() {
+        return instance;
+    }
+
     private static final String TABS_INI = "tabs.ini";
     private static final String KEY_PATH = "path";
     private static final String KEY_TYPE = "type";
@@ -28,12 +42,35 @@ public class Settings {
     private static final String KEY_EXPANDED_PATH = "expanded";
     private static final String KEY_PLAYLIST_PROVIDER = "playlistprovider";
 
-    public static boolean appLoaded = false;
+    private boolean testMode;
+    private String testSettings;
 
 
-    public static ArrayList<TabInfo> getTabs() {
-        Path file = getOrCreateSettingsFile(TABS_INI);
-        String settings = readSettingsFile(file);
+    public static void setTestMode() {
+        instance.testMode = true;
+    }
+
+
+    public String getTestSettings() {
+        return this.testSettings;
+    }
+    public void setTestSettings(String settings) {
+        this.testSettings = settings;
+    }
+
+
+
+    public ArrayList<TabInfo> getTabs() {
+        String settings;
+
+        if (testMode) {
+            settings = testSettings;
+
+        } else {
+            Path file = getOrCreateSettingsFile(TABS_INI);
+            settings = readSettingsFile(file);
+        }
+
         return getTabsFromSettings(settings);
     }
 
@@ -80,18 +117,21 @@ public class Settings {
     }
 
 
-    public static void saveTabs(List<TabInfo> tabs) {
-        // Don't save settings whilst the app is initialising (and triggering tab onSelectionChanged events)
-        if (!appLoaded) return;
+    public void saveTabs(List<TabInfo> tabs) {
+        String settings = getNewSettings(tabs).toString();
 
-        Path settingsFile = getOrCreateSettingsFile(TABS_INI);
-        try {
-            FileWriter fw = new FileWriter(settingsFile.toString());
-            StringWriter sw = getNewSettings(tabs);
-            fw.write(sw.toString());
-            fw.close();
-        } catch (Exception e) {
-            System.out.println("Settings.saveTabs(): " + e);
+        if (testMode) {
+            testSettings = settings;
+
+        } else {
+            Path settingsFile = getOrCreateSettingsFile(TABS_INI);
+            try {
+                FileWriter fw = new FileWriter(settingsFile.toString());
+                fw.write(settings);
+                fw.close();
+            } catch (Exception e) {
+                System.out.println("Settings.saveTabs(): " + e);
+            }
         }
     }
 

@@ -94,9 +94,12 @@ public class PlainTabController extends AbstractTabController implements FolderT
 
     @Override
     public void becomePlaylistProvider(boolean startPlaying) {
-        // Take over the player and set the current track to be tableController.getNextTrack()
+        // Take over the player which will cause it to call tableController.getNextTrack()
         playerHandler.setPlaylistProvider(tableController, startPlaying);
         info.setIsPlaylistProvider(true);
+        // this call is needed to colour the tab on app startup
+        setTabColoured(true);
+        tabPaneHandler.removeColourFromOtherTabInfos(info);
         saveTabInfos();
     }
 
@@ -110,6 +113,30 @@ public class PlainTabController extends AbstractTabController implements FolderT
     @Override
     public String getTabTitle() {
         return info.getRoot().getFileName().toString();
+    }
+
+
+    @Override
+    public void setTabColoured(boolean coloured) {
+        if (coloured) {
+            tab.getStyleClass().remove("inactiveTab");
+            addClassIfNotExists("activeTab");
+        } else {
+            tab.getStyleClass().remove("activeTab");
+            addClassIfNotExists("inactiveTab");
+        }
+    }
+
+
+    /**
+     * Add the class only if it isn't applied already (or else it'll
+     * be added multiple times and will appear buggy to the user!)
+     * @param className The name of the CSS class to apply to the tab
+     */
+    private void addClassIfNotExists(String className) {
+        int i = tab.getStyleClass().indexOf(className);
+        if (i < 0)
+            tab.getStyleClass().add(className);
     }
 
 
