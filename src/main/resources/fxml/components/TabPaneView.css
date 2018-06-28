@@ -3,12 +3,23 @@
 */
 
 .activeTab  {
-    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #B6D6E9);
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #acdaea);
+}
+
+.activeTab .tab-label {
+    -fx-text-fill: #026e93;
+    -fx-font-weight: bold;
 }
 
 .activeTab:hover  {
-    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #CCE5EC);
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #dceef5);
 }
+
+.activeTab:selected {
+    -fx-background-color: #f4f4f4;
+}
+
+
 
 .inactiveTab  {
     -fx-background-color: linear-gradient(to bottom, #FEFEFE, #E4E4E4);

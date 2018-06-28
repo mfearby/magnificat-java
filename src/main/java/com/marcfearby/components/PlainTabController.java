@@ -105,12 +105,6 @@ public class PlainTabController extends AbstractTabController implements FolderT
 
 
     @Override
-    public TabInfo getTabInfo() {
-        return info;
-    }
-
-
-    @Override
     public String getTabTitle() {
         return info.getRoot().getFileName().toString();
     }
