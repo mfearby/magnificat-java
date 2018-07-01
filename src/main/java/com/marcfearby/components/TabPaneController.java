@@ -19,7 +19,7 @@ public class TabPaneController implements TabPaneHandler {
     @FXML private TabPane tabs;
     private PlayerHandler playerHandler;
     private AbstractTabController activeTabController;
-    private boolean appLoaded;
+    private boolean tabsLoaded;
     private ArrayList<TabInfo> infos;
 
     public TabPaneController() {
@@ -44,7 +44,7 @@ public class TabPaneController implements TabPaneHandler {
         }
 
         // Settings can be saved from now on
-        appLoaded = true;
+        tabsLoaded = true;
     }
 
 
@@ -105,7 +105,7 @@ public class TabPaneController implements TabPaneHandler {
     @Override
     public void saveTabInfos() {
         // Don't save whilst the app is initialising (and triggering tab onSelectionChanged events)
-        if (appLoaded)
+        if (tabsLoaded)
             Settings.getInstance().saveTabs(infos);
     }
 

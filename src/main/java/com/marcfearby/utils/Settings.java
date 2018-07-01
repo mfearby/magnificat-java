@@ -35,6 +35,7 @@ public class Settings {
         return instance;
     }
 
+    private static final String SETTINGS_INI = "settings.ini";
     private static final String TABS_INI = "tabs.ini";
     private static final String KEY_PATH = "path";
     private static final String KEY_TYPE = "type";
