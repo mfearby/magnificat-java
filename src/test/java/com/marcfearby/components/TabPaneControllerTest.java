@@ -51,7 +51,7 @@ public class TabPaneControllerTest extends ApplicationTest {
             "playlistprovider = false",
             "");
 
-        Settings.getInstance().setTestSettings(settings);
+        Settings.getInstance().setTestTabSettings(settings);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/components/TabPaneView.fxml"));
         tabs = loader.load();

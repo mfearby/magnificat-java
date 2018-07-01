@@ -2,6 +2,7 @@ package com.marcfearby;
 
 import com.marcfearby.components.TabPaneController;
 import com.marcfearby.models.AppSettings;
+import com.marcfearby.utils.Settings;
 import com.marcfearby.widgets.PlayerController;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -41,12 +42,10 @@ public class WindowController implements Initializable {
     public void init(Stage primaryStage, Parent window) {
         this.primaryStage = primaryStage;
 
-        // Load application settings from the settings.ini file
-        appSettings = new AppSettings();
+        appSettings = Settings.getInstance().getAppSettings();
 
         primaryStage.setTitle("Magnificat");
         primaryStage.setScene(new Scene(window, appSettings.getWindowWidth(), appSettings.getWindowHeight()));
-        primaryStage.show();
 
         if (appSettings.hasNoPosition()) {
             primaryStage.centerOnScreen();
@@ -54,6 +53,9 @@ public class WindowController implements Initializable {
             primaryStage.setX(appSettings.getWindowX());
             primaryStage.setY(appSettings.getWindowY());
         }
+
+        // Show window after X/Y coordinates have been set (otherwise the user will see it move)
+        primaryStage.show();
 
         ChangeListener<Number> listener = (observable, oldValue, newValue) -> saveSizeAndPosition();
 

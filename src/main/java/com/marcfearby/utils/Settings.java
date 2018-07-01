@@ -1,5 +1,6 @@
 package com.marcfearby.utils;
 
+import com.marcfearby.models.AppSettings;
 import com.marcfearby.models.TabInfo;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
@@ -45,7 +46,8 @@ public class Settings {
     private static final String KEY_PLAYLIST_PROVIDER = "playlistprovider";
 
     private boolean testMode;
-    private String testSettings;
+    private String testAppSettings;
+    private String testTabSettings;
 
 
     public static void setTestMode() {
@@ -53,11 +55,38 @@ public class Settings {
     }
 
 
-    public String getTestSettings() {
-        return this.testSettings;
+    public String getTestAppSettings() {
+        return this.testAppSettings;
     }
-    public void setTestSettings(String settings) {
-        this.testSettings = settings;
+    public void setTestAppSettings(String testAppSettings) {
+        this.testAppSettings = testAppSettings;
+    }
+
+
+    public String getTestTabSettings() {
+        return this.testTabSettings;
+    }
+    public void setTestTabSettings(String settings) {
+        this.testTabSettings = settings;
+    }
+
+
+    /**
+     * Load application settings from settings.ini (or testAppSettings if applicable)
+     * @return An AppSettings object
+     */
+    public AppSettings getAppSettings() {
+        String settings;
+
+        if (testMode) {
+            settings = testAppSettings;
+
+        } else {
+            Path file = getOrCreateSettingsFile(SETTINGS_INI);
+            settings = readSettingsFile(file);
+        }
+
+        return new AppSettings(settings);
     }
 
 
@@ -66,7 +95,7 @@ public class Settings {
         String settings;
 
         if (testMode) {
-            settings = testSettings;
+            settings = testTabSettings;
 
         } else {
             Path file = getOrCreateSettingsFile(TABS_INI);
@@ -120,10 +149,10 @@ public class Settings {
 
 
     public void saveTabs(List<TabInfo> tabs) {
-        String settings = getNewSettings(tabs).toString();
+        String settings = getNewTabSettings(tabs).toString();
 
         if (testMode) {
-            testSettings = settings;
+            testTabSettings = settings;
 
         } else {
             Path settingsFile = getOrCreateSettingsFile(TABS_INI);
@@ -139,7 +168,7 @@ public class Settings {
 
 
     @SuppressWarnings("WeakerAccess")
-    public static StringWriter getNewSettings(List<TabInfo> tabs) {
+    public static StringWriter getNewTabSettings(List<TabInfo> tabs) {
         StringWriter contents = new StringWriter();
 
         try {
@@ -159,7 +188,7 @@ public class Settings {
 
             ini.store(contents);
         } catch (Exception e) {
-            System.out.println("Settings.getNewSettings(): " + e);
+            System.out.println("Settings.getNewTabSettings(): " + e);
         }
 
         return contents;
@@ -218,4 +247,5 @@ public class Settings {
         // On Linux:   /home/me/.local/share/Magnificat/
         return appDirs.getUserDataDir("Magnificat", null, "com.marcfearby");
     }
+
 }
