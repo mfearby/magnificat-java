@@ -2,6 +2,7 @@ package com.marcfearby.models;
 
 import org.ini4j.Wini;
 import java.io.StringReader;
+import java.io.StringWriter;
 
 public class AppSettings {
 
@@ -44,14 +45,29 @@ public class AppSettings {
     }
 
 
-    public boolean hasNoPosition() {
-        return windowX == 0.0 && windowY == 0;
+    public String getAppSettingsString() {
+        StringWriter contents = new StringWriter();
+
+        try {
+            // http://ini4j.sourceforge.net/index.html
+            Wini ini = new Wini();
+
+            ini.put(KEY_SECTION_MAIN, KEY_WIN_X, windowX);
+            ini.put(KEY_SECTION_MAIN, KEY_WIN_Y, windowY);
+            ini.put(KEY_SECTION_MAIN, KEY_WIDTH, windowWidth);
+            ini.put(KEY_SECTION_MAIN, KEY_HEIGHT, windowHeight);
+            ini.store(contents);
+
+        } catch (Exception e) {
+            System.out.println("AppSettings.getAppSettingsString(): " + e);
+        }
+
+        return contents.toString();
     }
 
 
-    public void save() {
-        // todo - implement settings.ini saving
-        System.out.println("height: " + windowHeight + ", width: " + windowWidth + ", x: " + windowX + ", y: " + windowY);
+    public boolean hasNoPosition() {
+        return windowX == 0.0 && windowY == 0;
     }
 
 

@@ -70,12 +70,6 @@ public class WindowController implements Initializable {
     private TimerTask task = null;
 
     private void saveSizeAndPosition() {
-        appSettings.setWindowHeight(primaryStage.getHeight());
-        appSettings.setWindowWidth(primaryStage.getWidth());
-
-        appSettings.setWindowX(primaryStage.getX());
-        appSettings.setWindowY(primaryStage.getY());
-
         if (timer != null) {
             task.cancel();
             timer.cancel();
@@ -90,12 +84,18 @@ public class WindowController implements Initializable {
         };
 
         // Basic debouncing to save only the last call to this method (without using RxJava)
-        timer.schedule(task,1000);
+        timer.schedule(task,500);
     }
 
 
     private void saveSettings() {
-        appSettings.save();
+        appSettings.setWindowHeight(primaryStage.getHeight());
+        appSettings.setWindowWidth(primaryStage.getWidth());
+
+        appSettings.setWindowX(primaryStage.getX());
+        appSettings.setWindowY(primaryStage.getY());
+
+        Settings.getInstance().saveAppSettings(appSettings);
         task.cancel();
         timer.cancel();
     }

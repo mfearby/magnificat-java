@@ -148,27 +148,43 @@ public class Settings {
     }
 
 
+    public void saveAppSettings(AppSettings appSettings) {
+        String settings = appSettings.getAppSettingsString();
+
+        if (testMode) {
+            testAppSettings = settings;
+        } else {
+            writeSettingsToFile(settings, SETTINGS_INI);
+        }
+
+    }
+
+
     public void saveTabs(List<TabInfo> tabs) {
-        String settings = getNewTabSettings(tabs).toString();
+        String settings = getTabSettingsString(tabs).toString();
 
         if (testMode) {
             testTabSettings = settings;
-
         } else {
-            Path settingsFile = getOrCreateSettingsFile(TABS_INI);
-            try {
-                FileWriter fw = new FileWriter(settingsFile.toString());
-                fw.write(settings);
-                fw.close();
-            } catch (Exception e) {
-                System.out.println("Settings.saveTabs(): " + e);
-            }
+            writeSettingsToFile(settings, TABS_INI);
+        }
+    }
+
+
+    private void writeSettingsToFile(String settings, String fileName) {
+        Path settingsFile = getOrCreateSettingsFile(fileName);
+        try {
+            FileWriter fw = new FileWriter(settingsFile.toString());
+            fw.write(settings);
+            fw.close();
+        } catch (Exception e) {
+            System.out.println("Settings.writeSettingsToFile(\"" + fileName + "\"): " + e);
         }
     }
 
 
     @SuppressWarnings("WeakerAccess")
-    public static StringWriter getNewTabSettings(List<TabInfo> tabs) {
+    public static StringWriter getTabSettingsString(List<TabInfo> tabs) {
         StringWriter contents = new StringWriter();
 
         try {
@@ -188,7 +204,7 @@ public class Settings {
 
             ini.store(contents);
         } catch (Exception e) {
-            System.out.println("Settings.getNewTabSettings(): " + e);
+            System.out.println("Settings.getTabSettingsString(): " + e);
         }
 
         return contents;
@@ -234,7 +250,6 @@ public class Settings {
     private static String getSettingsFilePath(String iniFileName) {
         String settingsDir = getSettingsDir();
         Path filePath  = Paths.get(settingsDir, iniFileName);
-//        System.out.println("Settings.getSettingsFilePath(): " + filePath);
         return filePath.toString();
     }
 
