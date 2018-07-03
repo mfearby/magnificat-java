@@ -15,6 +15,7 @@ public class TabInfo {
     private boolean expanded = false;
     private boolean isPlaylistProvider = false;
     private AbstractTabController controller = null;
+    private Double div1Position = 0.25;
 
 
     public TabInfo(TabType type, Path root, boolean active) {
@@ -73,6 +74,14 @@ public class TabInfo {
     }
     public void setIsPlaylistProvider(boolean isProvider) {
         this.isPlaylistProvider = isProvider;
+    }
+
+
+    public Double getDiv1Position() {
+        return div1Position;
+    }
+    public void setDiv1Position(Double div1Position) {
+        this.div1Position = div1Position;
     }
 
 }

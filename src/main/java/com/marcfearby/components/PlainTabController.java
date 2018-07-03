@@ -6,15 +6,19 @@ import com.marcfearby.widgets.FilesTableController;
 import com.marcfearby.widgets.FolderTreeController;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import java.nio.file.Path;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PlainTabController extends AbstractTabController implements FolderTreeHandler, PlainTabHandler {
 
     @FXML private Tab tab;
     @FXML private TreeView tree;
+    @FXML private SplitPane splitter;
     private TabPaneHandler tabPaneHandler;
     private PlayerHandler playerHandler;
     @FXML private FolderTreeController treeController;
@@ -48,6 +52,11 @@ public class PlainTabController extends AbstractTabController implements FolderT
         this.tabPaneHandler = tabPaneHandler;
         this.playerHandler = playerHandler;
 
+        SplitPane.setResizableWithParent(tree, false);
+        SplitPane.Divider div = splitter.getDividers().get(0);
+        // Restore the splitter position from last time (or use default)
+        div.setPosition(info.getDiv1Position());
+
         // Save before init() which triggers saveTabInfos() & overrides it with getRoot() before expandPath() below
         String selectedTreePath = info.getSelectedTreePath();
         boolean expanded = info.getExpanded();
@@ -63,6 +72,8 @@ public class PlainTabController extends AbstractTabController implements FolderT
         if (info.getIsPlaylistProvider()) {
             becomePlaylistProvider(false);
         }
+
+        div.positionProperty().addListener((observable, oldValue, newValue) -> handlerSplitterResize());
     }
 
 
@@ -150,6 +161,39 @@ public class PlainTabController extends AbstractTabController implements FolderT
      */
     private void saveTabInfos() {
         tabPaneHandler.saveTabInfos();
+    }
+
+
+
+    private Timer timer = null;
+    private TimerTask task = null;
+
+    private void handlerSplitterResize() {
+        if (timer != null) {
+            task.cancel();
+            timer.cancel();
+        }
+
+        timer = new Timer();
+
+        task = new TimerTask() {
+            public void run() {
+                saveSplitterPosition();
+            }
+        };
+
+        // Basic debouncing to save only the last call to this method (without using RxJava)
+        timer.schedule(task, 500);
+    }
+
+    private void saveSplitterPosition() {
+        task.cancel();
+        timer.cancel();
+
+        SplitPane.Divider div = splitter.getDividers().get(0);
+        info.setDiv1Position(div.getPosition());
+
+        saveTabInfos();
     }
 
 }

@@ -2,7 +2,6 @@ package com.marcfearby;
 
 import com.marcfearby.components.TabPaneController;
 import com.marcfearby.models.AppSettings;
-import com.marcfearby.utils.Settings;
 import com.marcfearby.widgets.PlayerController;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -42,7 +41,7 @@ public class WindowController implements Initializable {
     public void init(Stage primaryStage, Parent window) {
         this.primaryStage = primaryStage;
 
-        appSettings = Settings.getInstance().getAppSettings();
+        appSettings = AppSettings.getInstance();
 
         primaryStage.setTitle("Magnificat");
         primaryStage.setScene(new Scene(window, appSettings.getWindowWidth(), appSettings.getWindowHeight()));
@@ -57,7 +56,7 @@ public class WindowController implements Initializable {
         // Show window after X/Y coordinates have been set (otherwise the user will see it move)
         primaryStage.show();
 
-        ChangeListener<Number> listener = (observable, oldValue, newValue) -> saveSizeAndPosition();
+        ChangeListener<Number> listener = (observable, oldValue, newValue) -> saveSettings();
 
         primaryStage.widthProperty().addListener(listener);
         primaryStage.heightProperty().addListener(listener);
@@ -69,35 +68,34 @@ public class WindowController implements Initializable {
     private Timer timer = null;
     private TimerTask task = null;
 
-    private void saveSizeAndPosition() {
-        if (timer != null) {
-            task.cancel();
-            timer.cancel();
-        }
-
+    private void saveSettings() {
+        cancelTimer();
         timer = new Timer();
 
         task = new TimerTask() {
             public void run() {
-                saveSettings();
+                cancelTimer();
+
+                appSettings.setWindowHeight(primaryStage.getHeight());
+                appSettings.setWindowWidth(primaryStage.getWidth());
+
+                appSettings.setWindowX(primaryStage.getX());
+                appSettings.setWindowY(primaryStage.getY());
+
+                appSettings.save();
             }
         };
 
         // Basic debouncing to save only the last call to this method (without using RxJava)
-        timer.schedule(task,500);
+        timer.schedule(task, 500);
     }
 
 
-    private void saveSettings() {
-        appSettings.setWindowHeight(primaryStage.getHeight());
-        appSettings.setWindowWidth(primaryStage.getWidth());
-
-        appSettings.setWindowX(primaryStage.getX());
-        appSettings.setWindowY(primaryStage.getY());
-
-        Settings.getInstance().saveAppSettings(appSettings);
-        task.cancel();
-        timer.cancel();
+    private void cancelTimer() {
+        if (timer != null) {
+            task.cancel();
+            timer.cancel();
+        }
     }
 
 }

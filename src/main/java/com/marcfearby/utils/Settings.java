@@ -1,6 +1,5 @@
 package com.marcfearby.utils;
 
-import com.marcfearby.models.AppSettings;
 import com.marcfearby.models.TabInfo;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
@@ -44,6 +43,7 @@ public class Settings {
     private static final String KEY_SELECTED_PATH = "selected";
     private static final String KEY_EXPANDED_PATH = "expanded";
     private static final String KEY_PLAYLIST_PROVIDER = "playlistprovider";
+    private static final String KEY_DIV_1 = "div1";
 
     private boolean testMode;
     private String testAppSettings;
@@ -73,20 +73,24 @@ public class Settings {
 
     /**
      * Load application settings from settings.ini (or testAppSettings if applicable)
-     * @return An AppSettings object
+     * @return A string which can be read by org.ini4j.Wini
      */
-    public AppSettings getAppSettings() {
-        String settings;
-
+    public String getAppSettings() {
         if (testMode) {
-            settings = testAppSettings;
-
+            return testAppSettings;
         } else {
             Path file = getOrCreateSettingsFile(SETTINGS_INI);
-            settings = readSettingsFile(file);
+            return readSettingsFile(file);
         }
+    }
 
-        return new AppSettings(settings);
+
+    public void saveAppSettings(String settings) {
+        if (testMode) {
+            testAppSettings = settings;
+        } else {
+            writeSettingsToFile(settings, SETTINGS_INI);
+        }
     }
 
 
@@ -137,6 +141,9 @@ public class Settings {
                     boolean handler = Boolean.parseBoolean(ini.get(section, KEY_PLAYLIST_PROVIDER));
                     info.setIsPlaylistProvider(handler);
 
+                    double div1 = Helper.getDoubleOrDefault(ini.get(section, KEY_DIV_1), 0.25);
+                    info.setDiv1Position(div1);
+
                     tabs.add(info);
                 }
             }
@@ -145,18 +152,6 @@ public class Settings {
         }
 
         return tabs;
-    }
-
-
-    public void saveAppSettings(AppSettings appSettings) {
-        String settings = appSettings.getAppSettingsString();
-
-        if (testMode) {
-            testAppSettings = settings;
-        } else {
-            writeSettingsToFile(settings, SETTINGS_INI);
-        }
-
     }
 
 
@@ -200,6 +195,7 @@ public class Settings {
                 ini.put(section, KEY_SELECTED_PATH, info.getSelectedTreePath());
                 ini.put(section, KEY_EXPANDED_PATH, info.getExpanded());
                 ini.put(section, KEY_PLAYLIST_PROVIDER, info.getIsPlaylistProvider());
+                ini.put(section, KEY_DIV_1, info.getDiv1Position());
             }
 
             ini.store(contents);

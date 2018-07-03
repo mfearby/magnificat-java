@@ -3,6 +3,7 @@ package com.marcfearby.widgets;
 import com.marcfearby.interfaces.PlayerHandler;
 import com.marcfearby.interfaces.PlaylistProvider;
 import com.marcfearby.interfaces.TabPaneHandler;
+import com.marcfearby.models.AppSettings;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,9 @@ import javafx.scene.input.MouseEvent;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -43,7 +47,9 @@ public class PlayerController implements Initializable, PlayerHandler {
     private boolean repeat = false;
     private boolean atEndOfMedia = false;
     private double volumeBeforeMuted = 1.0;
+    private double currentVolume = 1.0;
     private PlaylistProvider playlistProvider = null;
+    private AppSettings appSettings;
 
     // See: https://docs.oracle.com/javase/8/javafx/media-tutorial/playercontrol.htm
 
@@ -62,11 +68,11 @@ public class PlayerController implements Initializable, PlayerHandler {
         });
 
         volumeSlider.valueProperty().addListener(ov -> {
-            if (volumeSlider.isValueChanging() && mp != null) {
-                double volume = volumeSlider.getValue() / 100.0;
-                mp.setVolume(volume);
-                volumeBeforeMuted = volume;
-                setAudibleIcon(volume > 0);
+            if (volumeSlider.isValueChanging()) {
+                setCurrentVolume(volumeSlider.getValue() / 100.0);
+
+                if (currentVolume > 0)
+                    volumeBeforeMuted = currentVolume;
             }
         });
     }
@@ -74,6 +80,21 @@ public class PlayerController implements Initializable, PlayerHandler {
 
     public void init(TabPaneHandler tabPaneHandler) {
         this.tabPaneHandler = tabPaneHandler;
+        appSettings = AppSettings.getInstance();
+        setCurrentVolume(appSettings.getVolume());
+        volumeBeforeMuted = appSettings.getVolumeBeforeMute();
+    }
+
+
+    private void setCurrentVolume(Double volume) {
+        this.currentVolume = volume;
+        volumeSlider.setValue(volume * 100); // this doesn't cause an endless loop
+
+        if (mp != null)
+            mp.setVolume(currentVolume);
+
+        setAudibleIcon(currentVolume > 0);
+        saveSettings();
     }
 
 
@@ -129,8 +150,17 @@ public class PlayerController implements Initializable, PlayerHandler {
     @FXML
     public void toggleSound(ActionEvent event) {
         this.setAudibleIcon(!audible);
+
+        if (currentVolume > 0)
+            volumeBeforeMuted = currentVolume;
+
         double vol = audible ? volumeBeforeMuted : 0;
-        mp.setVolume(vol);
+
+        // If the user is unmuting and it's still 0, set it to 50% so that it's not 'stuck' on mute
+        if (audible && vol == 0)
+            vol = 0.5;
+
+        setCurrentVolume(vol);
     }
 
 
@@ -163,8 +193,8 @@ public class PlayerController implements Initializable, PlayerHandler {
 
 
     /**
-     * Get the current PlaylistProvider; if there is none, ask the TabPane to get the
-     * active/selected tab to becomePlaylistProvider()
+     * Get the current PlaylistProvider; if there isn't one, ask the TabPane
+     * to get the active/selected tab to becomePlaylistProvider()
      * @return The current PlaylistProvider
      */
     private PlaylistProvider getPlaylistProvider() {
@@ -191,7 +221,7 @@ public class PlayerController implements Initializable, PlayerHandler {
         mp.play();
         setPlayingIcon(true);
         // Use the existing volume level for the new player object!
-        mp.setVolume(volumeSlider.getValue() / 100);
+        mp.setVolume(currentVolume);
 
         String name = track.getFileName().toString();
         if (name.indexOf(".") > 0) name = name.substring(0, name.lastIndexOf("."));
@@ -238,13 +268,8 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
-//    private void setVolume(Double volume) {
-//        volumeSlider.setValue(volume);
-//    }
-
-
     /**
-     * Update the sliders according to current values from the MediaPlayer
+     * Update the time/progress slider according to current values from the MediaPlayer
      */
     private void updateValues() {
         Platform.runLater(() -> {
@@ -254,10 +279,6 @@ public class PlayerController implements Initializable, PlayerHandler {
 
             if (!timeSlider.isDisabled() && duration.greaterThan(Duration.ZERO) && !timeSlider.isValueChanging()) {
                 timeSlider.setValue(currentTime.divide(duration.toMillis()).toMillis() * 100.0);
-            }
-
-            if (!volumeSlider.isValueChanging()) {
-                volumeSlider.setValue((int)Math.round(mp.getVolume() * 100));
             }
         });
     }
@@ -319,5 +340,33 @@ public class PlayerController implements Initializable, PlayerHandler {
         slider.setValueChanging(false);
     }
 
+
+
+    private Timer timer = null;
+    private TimerTask task = null;
+
+    private void saveSettings() {
+        cancelTimer();
+        timer = new Timer();
+
+        task = new TimerTask() {
+            public void run() {
+                cancelTimer();
+                appSettings.setVolume(currentVolume);
+                appSettings.setVolumeBeforeMute(volumeBeforeMuted);
+                appSettings.save();
+            }
+        };
+
+        // Basic debouncing to save only the last call to this method (without using RxJava)
+        timer.schedule(task, 500);
+    }
+
+    private void cancelTimer() {
+        if (timer != null) {
+            task.cancel();
+            timer.cancel();
+        }
+    }
 
 }
