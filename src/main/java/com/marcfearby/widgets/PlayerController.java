@@ -4,6 +4,7 @@ import com.marcfearby.interfaces.PlayerHandler;
 import com.marcfearby.interfaces.PlaylistProvider;
 import com.marcfearby.interfaces.TabPaneHandler;
 import com.marcfearby.models.AppSettings;
+import com.marcfearby.models.TrackInfo;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -50,6 +51,7 @@ public class PlayerController implements Initializable, PlayerHandler {
     private double currentVolume = 1.0;
     private PlaylistProvider playlistProvider = null;
     private AppSettings appSettings;
+    private TrackInfo currentTrack = null;
 
     // See: https://docs.oracle.com/javase/8/javafx/media-tutorial/playercontrol.htm
 
@@ -132,9 +134,11 @@ public class PlayerController implements Initializable, PlayerHandler {
 
             mp.play();
             this.setPlayingIcon(true);
+            if (currentTrack != null) currentTrack.setPlaying(1);
         } else {
             mp.pause();
             this.setPlayingIcon(false);
+            if (currentTrack != null) currentTrack.setPlaying(0);
         }
     }
 
@@ -144,6 +148,7 @@ public class PlayerController implements Initializable, PlayerHandler {
         if (mp == null) return;
         mp.stop();
         setPlayingIcon(false);
+        if (currentTrack != null) currentTrack.setPlaying(-1);
     }
 
 
@@ -166,8 +171,8 @@ public class PlayerController implements Initializable, PlayerHandler {
 
     @FXML
     public void goBack(ActionEvent event) {
-        Path track = getPlaylistProvider().getPreviousTrack();
-        playFile(track);
+        TrackInfo track = getPlaylistProvider().getPreviousTrack();
+        playTrack(track);
     }
 
 
@@ -178,8 +183,8 @@ public class PlayerController implements Initializable, PlayerHandler {
 
 
     private void playNext() {
-        Path track = getPlaylistProvider().getNextTrack();
-        playFile(track);
+        TrackInfo track = getPlaylistProvider().getNextTrack();
+        playTrack(track);
     }
 
 
@@ -207,15 +212,22 @@ public class PlayerController implements Initializable, PlayerHandler {
 
 
     /**
-     * Start playing a new track (and stop playing the current track, if any)
-     * @param track The path to the new track to play
+     * Start playing the file from 'currentTrack' (and stop playing the previous one, if any)
+     * @param track The TrackInfo object for the new track to be played
      */
-    private void playFile(Path track) {
+    private void playTrack(TrackInfo track) {
         // Kill the previous object if a track is currently playing/paused
         if (mp != null)
             mp.dispose();
 
-        Media media = new Media(track.toUri().toString());
+        if (currentTrack != null)
+            currentTrack.setPlaying(-1);
+
+        currentTrack = track;
+        currentTrack.setPlaying(1);
+
+        Path path = currentTrack.getPath();
+        Media media = new Media(path.toUri().toString());
         mp = new MediaPlayer(media);
 
         mp.play();
@@ -223,7 +235,7 @@ public class PlayerController implements Initializable, PlayerHandler {
         // Use the existing volume level for the new player object!
         mp.setVolume(currentVolume);
 
-        String name = track.getFileName().toString();
+        String name = path.getFileName().toString();
         if (name.indexOf(".") > 0) name = name.substring(0, name.lastIndexOf("."));
         trackTitle.setText(name);
 

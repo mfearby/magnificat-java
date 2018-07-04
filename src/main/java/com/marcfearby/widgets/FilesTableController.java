@@ -2,15 +2,20 @@ package com.marcfearby.widgets;
 
 import com.marcfearby.interfaces.PlainTabHandler;
 import com.marcfearby.interfaces.PlaylistProvider;
+import com.marcfearby.models.TrackInfo;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.apache.commons.io.FileUtils;
 import java.io.IOException;
 import java.net.URL;
@@ -24,15 +29,18 @@ import java.util.ResourceBundle;
 
 public class FilesTableController implements Initializable, PlaylistProvider {
 
-    @FXML private TableView<Path> table;
-    @FXML private TableColumn<Path, String> colName;
-    @FXML private TableColumn<Path, String> colSize;
-    @FXML private TableColumn<Path, String> colModified;
-    @FXML private TableColumn<Path, String> colType;
+    @FXML private TableView<TrackInfo> table;
+    @FXML private TableColumn<TrackInfo, Integer> colPlaying;
+    @FXML private TableColumn<TrackInfo, String> colName;
+    @FXML private TableColumn<TrackInfo, String> colSize;
+    @FXML private TableColumn<TrackInfo, String> colModified;
+    @FXML private TableColumn<TrackInfo, String> colType;
     private PlainTabHandler tabHandler;
-    private Path currentTrack = null;
+    private TrackInfo currentTrack = null;
     private boolean currentTrackWasChosen = false;
     private final Locale currentLocale = Locale.getDefault();
+    private final Image pausedImage = new Image(getClass().getResourceAsStream("/icons/tango/media-playback-pause.png"));
+    private final Image playingImage = new Image(getClass().getResourceAsStream("/icons/tango/audio-volume-high.png"));
 
 
     @FXML
@@ -57,7 +65,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     @SuppressWarnings("CodeBlock2Expr")
     private void setupTable() {
         table.setRowFactory(param -> {
-            TableRow<Path> row = new TableRow<>();
+            TableRow<TrackInfo> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
                     this.currentTrack = row.getItem();
@@ -69,14 +77,38 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             return row;
         });
 
-        colName.setCellValueFactory((TableColumn.CellDataFeatures<Path, String> param) -> {
-            return new SimpleStringProperty(param.getValue().getFileName().toString());
+        // Expects to find a public 'playingProperty' on the TrackInfo object
+        colPlaying.setCellValueFactory(new PropertyValueFactory<>("playing"));
+
+        colPlaying.setCellFactory(param -> {
+            return new TableCell<TrackInfo, Integer>() {
+                private ImageView img = new ImageView();
+                @Override
+                protected void updateItem(Integer playing, boolean empty) {
+                    super.updateItem(playing, empty);
+                    this.setStyle("-fx-padding: 3 0 0 5;");
+                    if (empty || playing < 0) {
+                        setGraphic(null);
+                        return;
+                    } else if (playing == 0) {
+                        img.setImage(pausedImage);
+                    } else {
+                        img.setImage(playingImage);
+                    }
+                    setGraphic(img);
+                }
+            };
         });
 
-        colSize.setCellValueFactory((TableColumn.CellDataFeatures<Path, String> param) -> {
+
+        colName.setCellValueFactory((TableColumn.CellDataFeatures<TrackInfo, String> param) -> {
+            return new SimpleStringProperty(param.getValue().getPath().getFileName().toString());
+        });
+
+        colSize.setCellValueFactory((TableColumn.CellDataFeatures<TrackInfo, String> param) -> {
             String fancy;
             try {
-                long size = Files.size(param.getValue());
+                long size = Files.size(param.getValue().getPath());
                 fancy = FileUtils.byteCountToDisplaySize(size);
             } catch (IOException e) {
                 fancy = e.getMessage();
@@ -84,7 +116,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             return new SimpleStringProperty(fancy);
         });
 
-        colModified.setCellValueFactory((TableColumn.CellDataFeatures<Path, String> param) -> {
+        colModified.setCellValueFactory((TableColumn.CellDataFeatures<TrackInfo, String> param) -> {
             // FULL: Sunday, 20 April 2014 1:01:54 PM AEST
             // LONG: 20 April 2014 1:01:54 PM
             // MEDIUM: 20/04/2014 1:01:54 PM
@@ -92,7 +124,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             String fancy;
             DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, currentLocale);
             try {
-                FileTime time = Files.getLastModifiedTime(param.getValue());
+                FileTime time = Files.getLastModifiedTime(param.getValue().getPath());
                 fancy = formatter.format(time.toMillis());
             } catch (IOException e) {
                 fancy = e.getMessage();
@@ -100,18 +132,19 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             return new SimpleStringProperty(fancy);
         });
 
-        colType.setCellValueFactory((TableColumn.CellDataFeatures<Path, String> param) -> {
+        colType.setCellValueFactory((TableColumn.CellDataFeatures<TrackInfo, String> param) -> {
             String ext = "";
-            int i = param.getValue().getFileName().toString().lastIndexOf('.');
-            if (i > 0) ext = param.getValue().getFileName().toString().substring(i + 1);
+            Path p = param.getValue().getPath();
+            int i = p.getFileName().toString().lastIndexOf('.');
+            if (i > 0) ext = p.getFileName().toString().substring(i + 1);
             return new SimpleStringProperty(ext.toUpperCase());
         });
     }
 
 
     @Override
-    public Path getNextTrack() {
-        ObservableList<Path> items = table.getItems();
+    public TrackInfo getNextTrack() {
+        ObservableList<TrackInfo> items = table.getItems();
 
         if (items.isEmpty())
             return null;
@@ -131,8 +164,8 @@ public class FilesTableController implements Initializable, PlaylistProvider {
 
 
     @Override
-    public Path getPreviousTrack() {
-        ObservableList<Path> items = table.getItems();
+    public TrackInfo getPreviousTrack() {
+        ObservableList<TrackInfo> items = table.getItems();
 
         if (items.isEmpty())
             return null;
@@ -145,7 +178,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
 
 
     @Override
-    public Path getRandomTrack() {
+    public TrackInfo getRandomTrack() {
         // todo implement random track selection
         return null;
     }
@@ -156,13 +189,13 @@ public class FilesTableController implements Initializable, PlaylistProvider {
      * @param directory The path containing music files from which the TableView will be repopulated
      */
     public void selectFolder(Path directory) {
-        ObservableList<Path> data = FXCollections.observableArrayList();
+        ObservableList<TrackInfo> data = FXCollections.observableArrayList();
 
         if (Files.isDirectory(directory)) {
             try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(directory, "*.{mp3,m4a,flac}")) {
                 for (Path path : dirStream) {
                     if (Files.isRegularFile(path) && !path.getFileName().startsWith(".")) {
-                        data.add(path);
+                        data.add(new TrackInfo(path));
                     }
                 }
             } catch (IOException e) {
@@ -171,7 +204,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         }
 
         // Created a sorted list (which is also sorted by default)
-        SortedList<Path> sortedData = new SortedList<>(data.sorted());
+        SortedList<TrackInfo> sortedData = new SortedList<>(data.sorted());
         // Allow the user can change the sort order themselves with the column headers
         sortedData.comparatorProperty().bind(table.comparatorProperty());
         table.setItems(sortedData);

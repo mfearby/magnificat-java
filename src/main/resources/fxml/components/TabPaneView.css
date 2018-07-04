@@ -1,30 +1,32 @@
 /*
     https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html#tabpane
+    'activeTab' means the tab which is the PlaylistProvider
 */
 
 .activeTab  {
-    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #acdaea);
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #e4f2f7);
 }
 
 .activeTab .tab-label {
-    -fx-text-fill: #026e93;
-    -fx-font-weight: bold;
+    -fx-text-fill: #0083ae;
 }
 
 .activeTab:hover  {
-    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #dceef5);
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #cee9f2);
 }
 
 .activeTab:selected {
-    -fx-background-color: #f4f4f4;
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #acdaea); /* #f4f4f4 */
 }
 
-
+.activeTab:selected .tab-label {
+    -fx-font-weight: bold; /* This doesn't work on macOS for some reason */
+}
 
 .inactiveTab  {
-    -fx-background-color: linear-gradient(to bottom, #FEFEFE, #E4E4E4);
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #EEEEEE);
 }
 
 .inactiveTab:hover {
-    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #EEEEEE);
+    -fx-background-color: linear-gradient(to bottom, #FEFEFE, #E4E4E4);
 }

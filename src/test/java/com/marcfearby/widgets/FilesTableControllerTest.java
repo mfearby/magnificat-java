@@ -88,7 +88,7 @@ public class FilesTableControllerTest extends ApplicationTest {
     @Test
     public void get_next_track() {
         String expected = Global.TESTING_MUSIC_FILE_1;
-        Path next = ctrl.getNextTrack(); // First track should be Bach
+        Path next = ctrl.getNextTrack().getPath(); // First track should be Bach
         assertEquals(expected, next.toString());
     }
 
@@ -96,8 +96,8 @@ public class FilesTableControllerTest extends ApplicationTest {
     @Test
     public void get_next_track_after_changing_sort() {
         String expected = Global.TESTING_MUSIC_FILE_3;
-        clickOn("Name");                 // Change sort to descending order
-        Path next = ctrl.getNextTrack(); // Previous track should now be Tchaikovsky
+        clickOn("Name");                                // Change sort to descending order
+        Path next = ctrl.getNextTrack().getPath(); // Previous track should now be Tchaikovsky
         assertEquals(expected, next.toString());
     }
 
@@ -105,8 +105,8 @@ public class FilesTableControllerTest extends ApplicationTest {
     @Test
     public void get_previous_track() {
         String expected = Global.TESTING_MUSIC_FILE_1;
-        ctrl.getNextTrack();                  // Advance from Bach to Haydn
-        Path next = ctrl.getPreviousTrack();  // Previous track should be Bach again
+        ctrl.getNextTrack();                                 // Advance from Bach to Haydn
+        Path next = ctrl.getPreviousTrack().getPath();  // Previous track should be Bach again
         assertEquals(expected, next.toString());
     }
 
@@ -114,10 +114,10 @@ public class FilesTableControllerTest extends ApplicationTest {
     @Test
     public void get_previous_track_after_changing_sort() {
         String expected = Global.TESTING_MUSIC_FILE_3;
-        ctrl.getNextTrack();                  // First track should be Bach
-        ctrl.getNextTrack();                  // Advance from Bach to Haydn
-        clickOn("Name");                      // Change sort to descending order
-        Path next = ctrl.getPreviousTrack();  // Previous track should now be Tchaikovsky
+        ctrl.getNextTrack();                                 // First track should be Bach
+        ctrl.getNextTrack();                                 // Advance from Bach to Haydn
+        clickOn("Name");                                     // Change sort to descending order
+        Path next = ctrl.getPreviousTrack().getPath();  // Previous track should now be Tchaikovsky
         assertEquals(expected, next.toString());
     }
 
@@ -128,7 +128,7 @@ public class FilesTableControllerTest extends ApplicationTest {
         assertNotNull(becomePlaylistProviderStartPlaying);
         assertEquals(true, becomePlaylistProviderStartPlaying);
         String expected = Global.TESTING_MUSIC_FILE_2;
-        Path next = ctrl.getNextTrack(); // Next track should be Haydn (not Tchaikovsky!)
+        Path next = ctrl.getNextTrack().getPath(); // Next track should be Haydn (not Tchaikovsky!)
         assertEquals(expected, next.toString());
     }
 
