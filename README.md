@@ -1,5 +1,9 @@
 # Magnificat
-Magnificat will become a magnificent cataloguing app for classical music enthusiasts with large CD collections to organise. 
+Magnificat will become a magnificent cataloguing app for classical music enthusiasts with large CD collections to organise. Version 0.1 is close to completion; here's what it looks like so far:
+
+![Screenshot of version 0.1, which is close to completion](screenshot.png)
+
+There are no binaries to download (you need to be a programming enthusiast to check it out and use it). I will build a JAR file at some point to allow semi-technical users to try it out without having to use an IDE.
 
 ## Project Roadmap
 

@@ -6,6 +6,12 @@
 <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0" minWidth="0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.marcfearby.widgets.FilesTableController">
   <columns>
       <TableColumn fx:id="colPlaying" minWidth="30.0" prefWidth="30.0" />
+      <TableColumn fx:id="colGenre" minWidth="75.0" prefWidth="100.0" text="Genre" />
+      <TableColumn fx:id="colArtist" minWidth="100.0" prefWidth="150.0" text="Artist" />
+      <TableColumn fx:id="colAlbum" minWidth="100.0" prefWidth="150.0" text="Album" />
+      <TableColumn fx:id="colTitle" minWidth="100.0" prefWidth="400.0" text="Title" />
+      <TableColumn fx:id="colTime" minWidth="50.0" prefWidth="65.0" text="Time" />
+      <TableColumn fx:id="colTrackNumOf" minWidth="60.0" prefWidth="75.0" text="Track" />
       <TableColumn fx:id="colName" minWidth="100.0" prefWidth="400.0" text="%colNameText" />
       <TableColumn fx:id="colSize" minWidth="60.0" prefWidth="90.0" text="Size" />
       <TableColumn fx:id="colModified" minWidth="100.0" prefWidth="150.0" text="Modified" />

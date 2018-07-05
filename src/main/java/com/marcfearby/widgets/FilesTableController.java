@@ -32,6 +32,12 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     @FXML private TableView<TrackInfo> table;
     @FXML private TableColumn<TrackInfo, Integer> colPlaying;
     @FXML private TableColumn<TrackInfo, String> colName;
+    @FXML private TableColumn<TrackInfo, String> colGenre;
+    @FXML private TableColumn<TrackInfo, String> colArtist;
+    @FXML private TableColumn<TrackInfo, String> colAlbum;
+    @FXML private TableColumn<TrackInfo, String> colTitle;
+    @FXML private TableColumn<TrackInfo, String> colTime;
+    @FXML private TableColumn<TrackInfo, String> colTrackNumOf;
     @FXML private TableColumn<TrackInfo, String> colSize;
     @FXML private TableColumn<TrackInfo, String> colModified;
     @FXML private TableColumn<TrackInfo, String> colType;
@@ -100,6 +106,17 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             };
         });
 
+        colGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
+
+        colArtist.setCellValueFactory(new PropertyValueFactory<>("artist"));
+
+        colAlbum.setCellValueFactory(new PropertyValueFactory<>("album"));
+
+        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+
+        colTime.setCellValueFactory(new PropertyValueFactory<>("time"));
+
+        colTrackNumOf.setCellValueFactory(new PropertyValueFactory<>("tracknumof"));
 
         colName.setCellValueFactory((TableColumn.CellDataFeatures<TrackInfo, String> param) -> {
             return new SimpleStringProperty(param.getValue().getPath().getFileName().toString());

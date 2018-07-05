@@ -11,6 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: net.jthink:jaudiotagger:2.2.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven.plugins:maven-shade-plugin:3.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven:maven-plugin-api:3.0" level="project" />
     <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-inject-plexus:1.4.2" level="project" />
