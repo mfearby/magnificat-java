@@ -116,6 +116,12 @@ public class PlainTabController extends AbstractTabController implements FolderT
 
 
     @Override
+    public void togglePlayPause() {
+        playerHandler.togglePlayPause();
+    }
+
+
+    @Override
     public String getTabTitle() {
         return info.getRoot().getFileName().toString();
     }

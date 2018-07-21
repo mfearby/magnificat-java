@@ -9,7 +9,7 @@
 
 <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0" minWidth="0" prefHeight="60.0" prefWidth="800.0" spacing="5.0" stylesheets="@PlayerView.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.marcfearby.widgets.PlayerController">
    <children>
-       <Button fx:id="playPauseButton" accessibleText="Play" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" onAction="#togglePlayPause" prefHeight="35.0" prefWidth="35.0" />
+       <Button fx:id="playPauseButton" accessibleText="Play" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" onAction="#togglePlayback" prefHeight="35.0" prefWidth="35.0" />
        <Button id="back-button" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#goBack" prefHeight="30.0" prefWidth="30.0">
          <HBox.margin>
             <Insets left="5.0" />

@@ -24,4 +24,10 @@ public interface PlainTabHandler {
      */
     void becomePlaylistProvider(boolean startPlaying);
 
+
+    /**
+     * Pass on an instruction to the PlayerHander that playback state should be toggled
+     */
+    void togglePlayPause();
+
 }

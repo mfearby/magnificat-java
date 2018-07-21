@@ -54,6 +54,11 @@ public class FilesTableControllerTest extends ApplicationTest {
             public void becomePlaylistProvider(boolean startPlaying) {
                 becomePlaylistProviderStartPlaying = startPlaying;
             }
+
+            @Override
+            public void togglePlayPause() {
+
+            }
         }
 
         ctrl.init(home, new TabHandler());

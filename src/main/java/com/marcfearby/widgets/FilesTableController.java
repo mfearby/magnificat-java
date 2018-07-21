@@ -156,6 +156,14 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             if (i > 0) ext = p.getFileName().toString().substring(i + 1);
             return new SimpleStringProperty(ext.toUpperCase());
         });
+
+
+        table.setOnKeyPressed(e -> {
+            String key = e.getCode().toString();
+            if (key.equals("SPACE")) {
+                tabHandler.togglePlayPause();
+            }
+        });
     }
 
 

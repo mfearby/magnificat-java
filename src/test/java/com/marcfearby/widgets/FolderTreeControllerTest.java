@@ -62,6 +62,10 @@ public class FolderTreeControllerTest extends ApplicationTest {
             @Override
             public void becomePlaylistProvider(boolean startPlaying) {
             }
+
+            @Override
+            public void togglePlayPause() {
+            }
         }
 
         FileSystem fs = Global.getFileSystem();

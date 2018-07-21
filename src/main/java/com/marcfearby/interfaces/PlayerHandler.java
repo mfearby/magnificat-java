@@ -9,4 +9,10 @@ public interface PlayerHandler {
      */
     void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying);
 
+
+    /**
+     * Toggle the playback of media
+     */
+    void togglePlayPause();
+
 }

@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -113,33 +112,8 @@ public class PlayerController implements Initializable, PlayerHandler {
 
 
     @FXML
-    public void togglePlayPause(ActionEvent event) {
-        // Most likely the user just started the app and pressed Play and didn't double-click on a track
-        if (mp == null) {
-            playNext();
-            return;
-        }
-
-        Status status = mp.getStatus();
-        if (status == Status.UNKNOWN  || status == Status.HALTED) {
-            return;
-        }
-
-        if (status == Status.PAUSED || status == Status.READY || status == Status.STOPPED) {
-            // rewind the track if we're sitting at the end
-            if (atEndOfMedia) {
-                mp.seek(mp.getStartTime());
-                atEndOfMedia = false;
-            }
-
-            mp.play();
-            this.setPlayingIcon(true);
-            if (currentTrack != null) currentTrack.setPlaying(1);
-        } else {
-            mp.pause();
-            this.setPlayingIcon(false);
-            if (currentTrack != null) currentTrack.setPlaying(0);
-        }
+    public void togglePlayback(ActionEvent event) {
+        togglePlayPause();
     }
 
 
@@ -194,6 +168,37 @@ public class PlayerController implements Initializable, PlayerHandler {
 
         if (startPlaying)
             playNext();
+    }
+
+
+    @Override
+    public void togglePlayPause() {
+        // Most likely the user just started the app, pressed Play, and didn't double-click on a track
+        if (mp == null) {
+            playNext();
+            return;
+        }
+
+        Status status = mp.getStatus();
+        if (status == Status.UNKNOWN  || status == Status.HALTED) {
+            return;
+        }
+
+        if (status == Status.PAUSED || status == Status.READY || status == Status.STOPPED) {
+            // rewind the track if we're sitting at the end
+            if (atEndOfMedia) {
+                mp.seek(mp.getStartTime());
+                atEndOfMedia = false;
+            }
+
+            mp.play();
+            this.setPlayingIcon(true);
+            if (currentTrack != null) currentTrack.setPlaying(1);
+        } else {
+            mp.pause();
+            this.setPlayingIcon(false);
+            if (currentTrack != null) currentTrack.setPlaying(0);
+        }
     }
 
 
