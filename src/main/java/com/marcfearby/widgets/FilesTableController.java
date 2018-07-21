@@ -74,10 +74,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             TableRow<TrackInfo> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    this.currentTrack = row.getItem();
-                    currentTrackWasChosen = true;
-                    // This will trigger the player to call getNextTrack() and play whatever it gets
-                    tabHandler.becomePlaylistProvider(true);
+                    setCurrentTackAndPlay(row.getItem());
                 }
             });
             return row;
@@ -162,8 +159,18 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             String key = e.getCode().toString();
             if (key.equals("SPACE")) {
                 tabHandler.togglePlayPause();
+            } else if (key.equals("ENTER")) {
+                setCurrentTackAndPlay(table.getSelectionModel().getSelectedItem());
             }
         });
+    }
+
+
+    private void setCurrentTackAndPlay(TrackInfo track) {
+        currentTrack = track;
+        currentTrackWasChosen = true;
+        // This will trigger the player to call getNextTrack() and play whatever it gets
+        tabHandler.becomePlaylistProvider(true);
     }
 
 
