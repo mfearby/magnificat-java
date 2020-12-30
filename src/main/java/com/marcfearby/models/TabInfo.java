@@ -1,6 +1,6 @@
 package com.marcfearby.models;
 
-import com.marcfearby.components.AbstractTabController;
+import com.marcfearby.controllers.AbstractTabController;
 
 import java.nio.file.Path;
 

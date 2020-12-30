@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.TabPane?>
-
-<TabPane fx:id="tabs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0" minWidth="0" prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="ALL_TABS" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.marcfearby.components.TabPaneController" stylesheets="@TabPaneView.css">
-  <tabs>
-
-  </tabs>
-</TabPane>

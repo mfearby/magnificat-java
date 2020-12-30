@@ -1,13 +1,10 @@
 package com.marcfearby.models;
 
+import com.mpatric.mp3agic.ID3v1;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.Mp3File;
 import javafx.beans.property.*;
-import java.io.File;
 import java.nio.file.Path;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.AudioHeader;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
 
 public class TrackInfo {
 
@@ -21,7 +18,7 @@ public class TrackInfo {
     private final StringProperty tracknumof = new SimpleStringProperty();
     private final StringProperty time = new SimpleStringProperty();
 
-    private int totalSeconds = -1;
+    private long totalSeconds = -1;
 
     public TrackInfo(Path path) {
         this.path = path;
@@ -78,21 +75,30 @@ public class TrackInfo {
             return;
 
         try {
-            File f = new File(path);
-            AudioFile af = AudioFileIO.read(f);
-            Tag tag = af.getTag();
-            AudioHeader h = af.getAudioHeader();
+            Mp3File mp3file  = new Mp3File(path);
 
-            this.genre.set(tag.getFirst(FieldKey.GENRE));
-            this.artist.set(tag.getFirst(FieldKey.ARTIST));
-            this.album.set(tag.getFirst(FieldKey.ALBUM));
-            this.title.set(tag.getFirst(FieldKey.TITLE));
-
-            this.totalSeconds = h.getTrackLength();
+            this.totalSeconds = mp3file.getLengthInSeconds();
             String formattedLength = String.format("%d:%02d", totalSeconds / 60, totalSeconds % 60);
             this.time.set(formattedLength);
 
-            this.tracknumof.set(tag.getFirst(FieldKey.TRACK) + " of " + tag.getFirst(FieldKey.TRACK_TOTAL));
+            if (mp3file.hasId3v2Tag()) {
+                ID3v2 id3v2Tag = mp3file.getId3v2Tag();
+                this.genre.set(id3v2Tag.getGenreDescription());
+                this.artist.set(id3v2Tag.getArtist());
+                this.album.set(id3v2Tag.getAlbum());
+                this.title.set(id3v2Tag.getTitle());
+                this.tracknumof.set(id3v2Tag.getTrack());
+                this.comments.set(id3v2Tag.getComment());
+
+            } else if (mp3file.hasId3v1Tag()) {
+                ID3v1 id3v1Tag = mp3file.getId3v1Tag();
+                this.genre.set(id3v1Tag.getGenreDescription());
+                this.artist.set(id3v1Tag.getArtist());
+                this.album.set(id3v1Tag.getAlbum());
+                this.title.set(id3v1Tag.getTitle());
+                this.tracknumof.set(id3v1Tag.getTrack());
+                this.comments.set(id3v1Tag.getComment());
+            }
 
         } catch (Exception e) {
             System.out.println("TrackInfo.addMp3TagInformation(): " + e.getMessage());
