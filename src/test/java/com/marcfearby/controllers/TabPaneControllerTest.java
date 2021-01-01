@@ -3,16 +3,17 @@ package com.marcfearby.controllers;
 import com.marcfearby.Testing;
 import com.marcfearby.interfaces.PlayerHandler;
 import com.marcfearby.interfaces.PlaylistProvider;
-import com.marcfearby.utils.Global;
 import com.marcfearby.utils.Settings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -25,14 +26,9 @@ public class TabPaneControllerTest extends ApplicationTest {
     private TabPane tabs;
     private TabPaneController ctrl;
 
-    @Override
-    public void init() throws Exception {
-        FxToolkit.registerStage(Stage::new);
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        Global.setTestMode();
+    @BeforeClass
+    public static void beforeClass() {
+        Testing.setupTestFileSystem(false); // load mp3 blobs into file handles
         Settings.setTestMode();
 
         String settings = String.join("\n",
@@ -52,13 +48,23 @@ public class TabPaneControllerTest extends ApplicationTest {
                 "playlistprovider = false",
                 "");
 
-        Settings.getInstance().setTestTabSettings(settings);
+        Settings sets =  Settings.getInstance();
+        sets.setTestTabSettings(settings);
+    }
 
+
+    @Override
+    public void init() throws Exception {
+        FxToolkit.registerStage(Stage::new);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/TabPaneView.fxml"));
         tabs = loader.load();
         ctrl = loader.getController();
 
-        class Handler implements PlayerHandler {
+        class DummyHandler implements PlayerHandler {
             @Override
             public void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying) {
 
@@ -70,7 +76,7 @@ public class TabPaneControllerTest extends ApplicationTest {
             }
         }
 
-        ctrl.init(new Handler());
+        ctrl.init(new DummyHandler());
 
         stage.setScene(new Scene(tabs, 800, 600));
         stage.show();
@@ -96,7 +102,10 @@ public class TabPaneControllerTest extends ApplicationTest {
 
     @Test
     public void test_tab_bold_state_on_startup() {
-        List<String> tab0 = tabs.getTabs().get(0).getStyleClass();
+        Tab tab = tabs.getTabs().get(0);
+        List<String> tab0 = tab.getStyleClass();
+        //System.out.println("tab0 Classes: " + Arrays.toString(tab0.toArray()));
+
         assertTrue(tab0.contains("activeTab"));
         assertFalse(tab0.contains("inactiveTab"));
 
@@ -109,8 +118,16 @@ public class TabPaneControllerTest extends ApplicationTest {
 
     @Test
     public void test_remove_bold_from_other_tab() {
-        clickOn("Other"); // select the second tab
-        doubleClickOn("Wagner.mp3"); // Magic string will do for now
+        // This doesn't work anymore
+        //clickOn("Other"); // select the second tab
+
+        // Found this but it doesn't work (at least not now in Jan 2021): https://github.com/TestFX/TestFX/issues/634#issuecomment-431956100
+        //clickOn(lookup(".tab-pane > .tab-header-area > .headers-region > .tab").nth(1).query());
+
+        // Not ideal but it'll do
+        tabs.getSelectionModel().select(1);
+
+        doubleClickOn("Vaughan Williams");
 
         List<String> tab0 = tabs.getTabs().get(0).getStyleClass();
         assertTrue(tab0.contains("inactiveTab"));

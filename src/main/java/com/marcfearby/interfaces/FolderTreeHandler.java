@@ -9,7 +9,7 @@ public interface FolderTreeHandler {
      * Fired whenever a folder node in the TreeView is selected
      * @param item The folder that was just selected
      */
-    void selectTreePath(TreeItem<Path> item);
+    void treePathSelected(TreeItem<Path> item);
 
 
     /**

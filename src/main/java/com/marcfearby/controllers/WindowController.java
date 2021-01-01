@@ -1,25 +1,18 @@
 package com.marcfearby.controllers;
 
-import com.marcfearby.controllers.TabPaneController;
 import com.marcfearby.models.AppSettings;
-import com.marcfearby.controllers.PlayerController;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-//import javafx.scene.layout.HBox;
-//import javafx.scene.control.TabPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class WindowController implements Initializable {
-
-//    @FXML private HBox player;
-//    @FXML private TabPane tabs;
 
     // https://stackoverflow.com/questions/12543487/javafx-nested-controllers-fxml-include
     @FXML private PlayerController playerController;
@@ -38,6 +31,7 @@ public class WindowController implements Initializable {
     }
 
 
+    // This is called from App.start()
     public void init(Stage primaryStage, Parent window) {
         this.primaryStage = primaryStage;
 

@@ -14,6 +14,7 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -26,7 +27,13 @@ public class FolderTreeControllerTest extends ApplicationTest {
 
     private TreeView<Path> tree;
     private FolderTreeController ctrl;
-    private Path receivedPath = null;
+    private static Path receivedPath = null;
+
+    @BeforeClass
+    public static void beforeClass() {
+        Testing.setupTestFileSystem(false); // load mp3 blobs into file handles
+    }
+
 
     @Override
     public void init() throws Exception {
@@ -36,14 +43,13 @@ public class FolderTreeControllerTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Global.setTestMode();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/widgets/FolderTreeView.fxml"));
         tree = loader.load();
         ctrl = loader.getController();
 
-        class TreeHandler implements FolderTreeHandler {
+        class DummyTreeHandler implements FolderTreeHandler {
             @Override
-            public void selectTreePath(TreeItem<Path> item) {
+            public void treePathSelected(TreeItem<Path> item) {
                 receivedPath = item.getValue();
             }
             @Override
@@ -52,27 +58,25 @@ public class FolderTreeControllerTest extends ApplicationTest {
             }
         }
 
-        class TabHandler implements PlainTabHandler {
+        class DummyTabHandler implements PlainTabHandler {
             @Override
-            public void changeTabRoot(Path path) {
-            }
+            public void changeTabRoot(Path path) { }
             @Override
             public void addTab(Path path) {
                 receivedPath = path;
             }
             @Override
-            public void becomePlaylistProvider(boolean startPlaying) {
-            }
+            public void becomePlaylistProvider(boolean startPlaying) { }
 
             @Override
-            public void togglePlayPause() {
-            }
+            public void togglePlayPause() { }
         }
 
+        // Call to beforeClass() above will make sure this is the Jimfs file system
         FileSystem fs = Global.getFileSystem();
-        Path home = fs.getPath(Global.TESTING_PATH_HOME);
 
-        ctrl.init(home, new TreeHandler(), new TabHandler());
+        Path home = fs.getPath(Global.TESTING_PATH_HOME);
+        ctrl.init(home, new DummyTreeHandler(), new DummyTabHandler());
 
         stage.setScene(new Scene(tree, 800, 600));
         stage.show();
@@ -111,19 +115,22 @@ public class FolderTreeControllerTest extends ApplicationTest {
 
     @Test
     public void select_root_node() {
+        // Select Music first, then select the root note (since it's already selected
+        // by default, clicking it again won't trigger the treePathSelected event)
         clickOn("Music");
+        clickOn("Magnificat");
         assertNotNull(receivedPath);
-        String expected = Testing.TESTING_PATH_MUSIC;
+        String expected = Testing.TESTING_PATH_HOME;
         assertEquals("Path received for selected tree node is incorrect", expected, receivedPath.toString());
     }
 
 
     @Test
     public void right_click_open_in_new_tab() {
-        clickOn("Music", MouseButton.SECONDARY);
+        clickOn("Other", MouseButton.SECONDARY);
         clickOn("Open in new tab");
         assertNotNull(receivedPath);
-        String expected = Testing.TESTING_PATH_MUSIC;
+        String expected = Testing.TESTING_PATH_OTHER;
         assertEquals("Path received for the new tab is incorrect", expected, receivedPath.toString());
     }
 

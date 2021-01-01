@@ -21,33 +21,37 @@ public class Testing {
     public static String TESTING_MUSIC_FILE_VAUGHAN_WILLIAMS = TESTING_PATH_WHATEVER + "/Vaughan_Williams.mp3";
 
 
-    public static FileSystem getTestFileSystem() {
+    public static FileSystem setupTestFileSystem(boolean emptyFilesOnly) {
         Global.setTestMode(); // set this in case it hasn't been set before
         FileSystem fs = Global.getFileSystem();
-        setupTestFileSystem(fs);
+        createFilesAndDirectories(fs, emptyFilesOnly);
         return fs;
     }
 
 
-    public static void setupTestFileSystem(FileSystem fs) {
+    public static void createFilesAndDirectories(FileSystem fs, boolean emptyFilesOnly) {
         try {
             Path dir = fs.getPath(TESTING_PATH_MUSIC);
             Files.createDirectories(dir);
 
-            Path bach = Files.createFile(dir.resolve(TESTING_MUSIC_FILE_BACH));
-            loadTestMp3(bach, "Bach.mp3");
+            Path bach = dir.resolve(TESTING_MUSIC_FILE_BACH);
+            if (!Files.exists(bach)) Files.createFile(bach);
+            if (!emptyFilesOnly) loadTestMp3(bach, "Bach.mp3");
 
-            Path haydn = Files.createFile(dir.resolve(TESTING_MUSIC_FILE_HAYDN));
-            loadTestMp3(haydn, "Haydn.mp3");
+            Path haydn = dir.resolve(TESTING_MUSIC_FILE_HAYDN);
+            if (!Files.exists(haydn)) Files.createFile(haydn);
+            if (!emptyFilesOnly) loadTestMp3(haydn, "Haydn.mp3");
 
-            Path tchaikovsky = Files.createFile(dir.resolve(TESTING_MUSIC_FILE_TCHAIKOVSKY));
-            loadTestMp3(tchaikovsky, "Tchaikovsky.mp3");
+            Path tchaikovsky = dir.resolve(TESTING_MUSIC_FILE_TCHAIKOVSKY);
+            if (!Files.exists(tchaikovsky)) Files.createFile(tchaikovsky);
+            if (!emptyFilesOnly) loadTestMp3(tchaikovsky, "Tchaikovsky.mp3");
 
-            Path more = fs.getPath(TESTING_PATH_WHATEVER);
-            Files.createDirectories(more);
+            dir = fs.getPath(TESTING_PATH_WHATEVER);
+            Files.createDirectories(dir);
 
-            Path vaughanWilliams = Files.createFile(more.resolve(TESTING_MUSIC_FILE_VAUGHAN_WILLIAMS));
-            loadTestMp3(vaughanWilliams, "Vaughan_Williams.mp3");
+            Path vaughanWilliams = dir.resolve(TESTING_MUSIC_FILE_VAUGHAN_WILLIAMS);
+            if (!Files.exists(vaughanWilliams)) Files.createFile(vaughanWilliams);
+            if (!emptyFilesOnly) loadTestMp3(vaughanWilliams, "Vaughan_Williams.mp3");
 
 //                Files.write(test, ImmutableList.of("asdf"), StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -58,13 +62,9 @@ public class Testing {
 
     private static void loadTestMp3(Path target, String testResourceName) {
         URL mp3 = App.class.getResource("/mp3/" + testResourceName);
-//        System.out.println(mp3);
 
         try (InputStream stream = new FileInputStream(mp3.getPath())) {
-            long bytes = Files.copy(stream, target, StandardCopyOption.REPLACE_EXISTING);
-//            System.out.println("Bytes copied: " + bytes + " to " + target.toString());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Files.copy(stream, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }

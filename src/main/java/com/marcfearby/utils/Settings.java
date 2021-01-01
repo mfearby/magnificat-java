@@ -114,6 +114,9 @@ public class Settings {
     public static ArrayList<TabInfo> getTabsFromSettings(String settings) {
         ArrayList<TabInfo> tabs = new ArrayList<>();
 
+        if (settings == null || settings.isEmpty())
+            return tabs;
+
         try {
             // http://ini4j.sourceforge.net/index.html
             StringReader sr = new StringReader(settings);
@@ -121,13 +124,14 @@ public class Settings {
 
             for (String section : ini.keySet()) {
                 FileSystem fs = Global.getFileSystem();
-                Path file = fs.getPath(ini.get(section, KEY_PATH));
+                String path = ini.get(section, KEY_PATH);
+                Path dirPath = fs.getPath(path);
 
                 // Allow a tab to be resurrected only if its root directory still exists
-                if (Files.exists(file)) {
+                if (Files.isDirectory(dirPath)) {
                     TabInfo.TabType type = TabInfo.TabType.valueOf(ini.get(section, KEY_TYPE));
                     boolean active = Boolean.parseBoolean(ini.get(section, KEY_ACTIVE));
-                    TabInfo info = new TabInfo(type, file, active);
+                    TabInfo info = new TabInfo(type, dirPath, active);
 
                     String selectedValue = ini.get(section, KEY_SELECTED_PATH);
                     if (selectedValue != null) {
@@ -149,6 +153,7 @@ public class Settings {
             }
         } catch (Exception e) {
             System.out.println("Settings.getTabs(): " + e);
+            e.printStackTrace();
         }
 
         return tabs;

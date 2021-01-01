@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public interface TabPaneHandler {
 
-    void addTab(Path path);
+    void addTab(Path path, boolean becomePlaylistProvider);
 
     void saveTabInfos();
 

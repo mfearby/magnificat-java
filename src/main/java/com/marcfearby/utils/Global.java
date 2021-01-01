@@ -9,6 +9,7 @@ import com.google.common.jimfs.Jimfs;
 /* This is probably a naughty name for a class, but what are you gonna do? ;-) */
 public class Global {
 
+    private static FileSystem testFileSystem = null;
     private static boolean testMode = false;
     public static String TESTING_PATH_HOME = "/Users/Magnificat";
 
@@ -24,11 +25,22 @@ public class Global {
      */
     public static FileSystem getFileSystem() {
         if (testMode) {
-            FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
-            return fs;
+            if (testFileSystem == null) {
+                System.out.println("Creating new Jimfs...");
+                testFileSystem = Jimfs.newFileSystem(Configuration.unix());
+            }
+            return testFileSystem;
         } else {
             return FileSystems.getDefault();
         }
+    }
+
+    /**
+     * Overwrites any existing filesystem with an empty Jimfs file system for a testing clean-slate
+     */
+    public static void resetTestFileSystem() {
+        System.out.println("Resetting Jimfs...");
+        testFileSystem = Jimfs.newFileSystem(Configuration.unix());
     }
 
 
@@ -41,8 +53,6 @@ public class Global {
             return fs.getPath(System.getProperty("user.home"));
         }
     }
-
-
 
 
 }

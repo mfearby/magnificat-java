@@ -10,12 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableView;
-
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 public class TabPaneController implements TabPaneHandler {
 
@@ -43,8 +39,8 @@ public class TabPaneController implements TabPaneHandler {
         } else {
             // Get the current home folder according to the file system in effect
             Path home = Global.getUserHomeFolder();
-            System.out.println("User's home folder: " + home.toString());
-            addTab(home);
+            System.out.println("TabPaneController.init(): User's home folder: " + home.toString());
+            addTab(home, true);
         }
 
         // Settings can be saved from now on
@@ -93,8 +89,9 @@ public class TabPaneController implements TabPaneHandler {
 
 
     @Override
-    public void addTab(Path path) {
+    public void addTab(Path path, boolean becomePlaylistProvider) {
         TabInfo info = new TabInfo(TabInfo.TabType.PLAIN, path, true);
+        if (becomePlaylistProvider) info.setIsPlaylistProvider(true);
         addTab(info);
     }
 

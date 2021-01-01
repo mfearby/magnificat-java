@@ -22,7 +22,7 @@ public class TrackInfo {
 
     public TrackInfo(Path path) {
         this.path = path;
-        addMp3TagInformation();
+        addMp3TagInformation(path);
     }
 
 
@@ -68,13 +68,12 @@ public class TrackInfo {
     }
 
 
-    private void addMp3TagInformation() {
-        String path = this.path.toString();
-
-        if (path.isEmpty())
+    private void addMp3TagInformation(Path path) {
+        if (path.toString().isEmpty())
             return;
 
         try {
+            // Opening the file using its Path instead of passing a string makes it compatible with my test cases
             Mp3File mp3file  = new Mp3File(path);
 
             this.totalSeconds = mp3file.getLengthInSeconds();

@@ -43,7 +43,7 @@ public class FolderTreeController {
 
 
     private void setupTree(Path directory) {
-        tree.setCellFactory(param -> new TreeCell<Path>() {
+        tree.setCellFactory(param -> new TreeCell<>() {
             @Override
             public void updateItem(Path item, boolean empty) {
                 super.updateItem(item, empty);
@@ -61,7 +61,7 @@ public class FolderTreeController {
 
                     MenuItem m = new MenuItem("Refresh", new ImageView(refreshImage));
                     m.setOnAction(event -> {
-                        FileTreeItem fi = (FileTreeItem)getTreeItem();
+                        FileTreeItem fi = (FileTreeItem) getTreeItem();
                         fi.refresh();
                     });
 
@@ -92,7 +92,7 @@ public class FolderTreeController {
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         selectedItem = newValue;
-                        treeHandler.selectTreePath(newValue);
+                        treeHandler.treePathSelected(newValue);
                     }
                 });
 

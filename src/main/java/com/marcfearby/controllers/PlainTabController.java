@@ -76,7 +76,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
 
 
     @Override
-    public void selectTreePath(TreeItem<Path> item) {
+    public void treePathSelected(TreeItem<Path> item) {
         tableController.selectFolder(item.getValue());
         saveSelectedItem(item);
     }
@@ -90,7 +90,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
 
     @Override
     public void addTab(Path path) {
-        tabPaneHandler.addTab(path);
+        tabPaneHandler.addTab(path, false);
     }
 
 
