@@ -98,6 +98,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
     public void changeTabRoot(Path path) {
         info.setRoot(path);
         saveTabInfos();
+        tab.setText(getTabTitle());
     }
 
 
