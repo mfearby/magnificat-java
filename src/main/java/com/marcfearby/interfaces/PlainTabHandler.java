@@ -30,4 +30,6 @@ public interface PlainTabHandler {
      */
     void togglePlayPause();
 
+
+    void saveCurrentTrack(Path track);
 }

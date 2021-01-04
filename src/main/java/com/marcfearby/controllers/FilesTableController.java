@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -68,13 +69,29 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     }
 
 
+    public void restoreCurrentTrack(Path path) {
+        try {
+            List<TrackInfo> items = table.getItems();
+            // Find the matching TrackInfo object in the table and start playing it again
+            for (TrackInfo item : items) {
+                if (item.getPath().equals(path)) {
+                    setCurrentTrackAndPlay(item);
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("FilesTableController.restoreCurrentTrack(): " + ex.getMessage());
+        }
+    }
+
+
     @SuppressWarnings("CodeBlock2Expr")
     private void setupTable() {
         table.setRowFactory(param -> {
             TableRow<TrackInfo> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    setCurrentTackAndPlay(row.getItem());
+                    setCurrentTrackAndPlay(row.getItem());
                 }
             });
             return row;
@@ -84,7 +101,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         colPlaying.setCellValueFactory(new PropertyValueFactory<>("playing"));
 
         colPlaying.setCellFactory(param -> {
-            return new TableCell<TrackInfo, Integer>() {
+            return new TableCell<>() {
                 private ImageView img = new ImageView();
                 @Override
                 protected void updateItem(Integer playing, boolean empty) {
@@ -160,13 +177,17 @@ public class FilesTableController implements Initializable, PlaylistProvider {
             if (key.equals("SPACE")) {
                 tabHandler.togglePlayPause();
             } else if (key.equals("ENTER")) {
-                setCurrentTackAndPlay(table.getSelectionModel().getSelectedItem());
+                setCurrentTrackAndPlay(table.getSelectionModel().getSelectedItem());
             }
         });
     }
 
 
-    private void setCurrentTackAndPlay(TrackInfo track) {
+    /**
+     * Specify the user's double-clicked file as the current track, then play it
+     * @param track The track to be played immediately
+     */
+    private void setCurrentTrackAndPlay(TrackInfo track) {
         currentTrack = track;
         currentTrackWasChosen = true;
         // This will trigger the player to call getNextTrack() and play whatever it gets
@@ -184,6 +205,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         // If the user double-clicked on a row, return that instead of finding the next track
         if (currentTrackWasChosen) {
             currentTrackWasChosen = false;
+            saveCurrentTrack(currentTrack);
             return currentTrack;
         }
 
@@ -191,7 +213,13 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         int currentIndex = items.indexOf(currentTrack);
         int nextIndex = currentIndex + 1 < items.size() ? ++currentIndex : currentIndex;
         currentTrack = items.get(nextIndex);
+        saveCurrentTrack(currentTrack);
         return currentTrack;
+    }
+
+
+    private void saveCurrentTrack(TrackInfo track) {
+        tabHandler.saveCurrentTrack(track.getPath());
     }
 
 

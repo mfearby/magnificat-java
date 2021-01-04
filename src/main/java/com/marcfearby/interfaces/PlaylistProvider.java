@@ -2,6 +2,9 @@ package com.marcfearby.interfaces;
 
 import com.marcfearby.models.TrackInfo;
 
+/**
+ * Interface for the FilesTableController to supply track information to the PlayerHandler/Controller
+ */
 public interface PlaylistProvider {
 
     /**

@@ -37,13 +37,16 @@ public class Settings {
 
     private static final String SETTINGS_INI = "settings.ini";
     private static final String TABS_INI = "tabs.ini";
+    // "path" is the root folder for the Folder Tree
     private static final String KEY_PATH = "path";
     private static final String KEY_TYPE = "type";
     private static final String KEY_ACTIVE = "active";
+    // "selected" is the highlighted folder in the tree (i.e., the one which is the root for the Files Table)
     private static final String KEY_SELECTED_PATH = "selected";
     private static final String KEY_EXPANDED_PATH = "expanded";
     private static final String KEY_PLAYLIST_PROVIDER = "playlistprovider";
     private static final String KEY_DIV_1 = "div1";
+    private static final String KEY_CURRENT_TRACK = "track";
 
     private boolean testMode;
     private String testAppSettings;
@@ -137,6 +140,10 @@ public class Settings {
                     if (selectedValue != null) {
                         Path selected = fs.getPath(selectedValue);
                         info.setSelectedTreePath(selected.toString());
+
+                        String currentTrack = ini.get(section, KEY_CURRENT_TRACK);
+                        Path currentTrackPath = selected.resolve(currentTrack);
+                        info.setCurrentTrack(currentTrackPath);
                     }
 
                     boolean expanded = Boolean.parseBoolean(ini.get(section, KEY_EXPANDED_PATH));
@@ -201,6 +208,10 @@ public class Settings {
                 ini.put(section, KEY_EXPANDED_PATH, info.getExpanded());
                 ini.put(section, KEY_PLAYLIST_PROVIDER, info.getIsPlaylistProvider());
                 ini.put(section, KEY_DIV_1, info.getDiv1Position());
+
+                String currentTrack = "";
+                if (info.getCurrentTrack() != null) currentTrack = info.getCurrentTrack().getFileName().toString();
+                ini.put(section, KEY_CURRENT_TRACK, currentTrack);
             }
 
             ini.store(contents);

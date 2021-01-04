@@ -16,6 +16,7 @@ public class TabInfo {
     private boolean isPlaylistProvider = false;
     private AbstractTabController controller = null;
     private Double div1Position = 0.25;
+    private Path currentTrack = null;
 
 
     public TabInfo(TabType type, Path root, boolean active) {
@@ -23,6 +24,7 @@ public class TabInfo {
         this.root = root;
         this.active = active;
     }
+
 
     public TabType getType() {
         return this.type;
@@ -83,5 +85,15 @@ public class TabInfo {
     public void setDiv1Position(Double div1Position) {
         this.div1Position = div1Position;
     }
+
+
+    public Path getCurrentTrack() {
+        return currentTrack;
+    }
+
+    public void setCurrentTrack(Path currentTrack) {
+        this.currentTrack = currentTrack;
+    }
+
 
 }

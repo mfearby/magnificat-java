@@ -68,7 +68,12 @@ public class PlainTabController extends AbstractTabController implements FolderT
             treeController.expandPath(selectedTreePath, expanded);
 
         if (info.getIsPlaylistProvider()) {
-            becomePlaylistProvider(false);
+            Path restoreTrack = info.getCurrentTrack();
+            if (restoreTrack != null) {
+                tableController.restoreCurrentTrack(restoreTrack);
+            } else {
+                becomePlaylistProvider(false);
+            }
         }
 
         div.positionProperty().addListener((observable, oldValue, newValue) -> handlerSplitterResize());
@@ -138,6 +143,13 @@ public class PlainTabController extends AbstractTabController implements FolderT
     }
 
 
+    @Override
+    public void saveCurrentTrack(Path track) {
+        info.setCurrentTrack(track);
+        saveTabInfos();
+    }
+
+
     /**
      * Add the class only if it isn't applied already (or else it'll
      * be added multiple times and will appear buggy to the user!)
@@ -165,7 +177,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
      * Save all the information about this tab to the settings file
      */
     private void saveTabInfos() {
-        tabPaneHandler.saveTabInfos();
+        tabPaneHandler.saveTabInfos(info);
     }
 
 
