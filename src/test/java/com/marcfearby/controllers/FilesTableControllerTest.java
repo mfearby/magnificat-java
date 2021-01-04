@@ -66,11 +66,10 @@ public class FilesTableControllerTest extends ApplicationTest {
             public void becomePlaylistProvider(boolean startPlaying) {
                 becomePlaylistProviderStartPlaying = startPlaying;
             }
-
             @Override
-            public void togglePlayPause() {
-
-            }
+            public void togglePlayPause() { }
+            @Override
+            public void saveCurrentTrack(Path track) { }
         }
 
         // Initialise the table view controller with the fake "music" path

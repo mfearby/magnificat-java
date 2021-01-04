@@ -66,14 +66,9 @@ public class TabPaneControllerTest extends ApplicationTest {
 
         class DummyHandler implements PlayerHandler {
             @Override
-            public void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying) {
-
-            }
-
+            public void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying) { }
             @Override
-            public void togglePlayPause() {
-
-            }
+            public void togglePlayPause() { }
         }
 
         ctrl.init(new DummyHandler());

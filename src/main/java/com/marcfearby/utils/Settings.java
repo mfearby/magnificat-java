@@ -142,8 +142,10 @@ public class Settings {
                         info.setSelectedTreePath(selected.toString());
 
                         String currentTrack = ini.get(section, KEY_CURRENT_TRACK);
-                        Path currentTrackPath = selected.resolve(currentTrack);
-                        info.setCurrentTrack(currentTrackPath);
+                        if (currentTrack != null) {
+                            Path currentTrackPath = selected.resolve(currentTrack);
+                            info.setCurrentTrack(currentTrackPath);
+                        }
                     }
 
                     boolean expanded = Boolean.parseBoolean(ini.get(section, KEY_EXPANDED_PATH));

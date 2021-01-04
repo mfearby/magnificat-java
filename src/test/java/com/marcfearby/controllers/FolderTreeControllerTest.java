@@ -67,9 +67,10 @@ public class FolderTreeControllerTest extends ApplicationTest {
             }
             @Override
             public void becomePlaylistProvider(boolean startPlaying) { }
-
             @Override
             public void togglePlayPause() { }
+            @Override
+            public void saveCurrentTrack(Path track) { }
         }
 
         // Call to beforeClass() above will make sure this is the Jimfs file system
