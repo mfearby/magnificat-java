@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -46,6 +47,8 @@ public class WindowController implements Initializable {
             primaryStage.setX(appSettings.getWindowX());
             primaryStage.setY(appSettings.getWindowY());
         }
+
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/Magnificat.png")));
 
         // Show window after X/Y coordinates have been set (otherwise the user will see it move)
         primaryStage.show();
