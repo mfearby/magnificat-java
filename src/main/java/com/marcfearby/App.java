@@ -22,7 +22,8 @@ public class App extends Application {
         ctrl.init(stage, window);
     }
 
-    public static void main(String[] args) {
+    // This isn't called main because that's in magnificat.java so that I can get a working uber-jar
+    public static void startup(String[] args) {
         launch();
     }
 

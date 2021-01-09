@@ -1,5 +1,6 @@
 package com.marcfearby.controllers;
 
+import com.marcfearby.App;
 import com.marcfearby.models.AppSettings;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -48,7 +49,9 @@ public class WindowController implements Initializable {
             primaryStage.setY(appSettings.getWindowY());
         }
 
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/Magnificat.png")));
+        // This style of loading resources works within the IDE, testing, AND the uber jar.
+        // Although I can still use getClass().getResourceAsStream() elsewhere but not here?! Weird.
+        primaryStage.getIcons().add(new Image(App.class.getResourceAsStream("/icons/magnificat.png")));
 
         // Show window after X/Y coordinates have been set (otherwise the user will see it move)
         primaryStage.show();
