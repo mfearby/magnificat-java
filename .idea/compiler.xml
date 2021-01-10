@@ -6,8 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Magnificat" />
+        <module name="magnificat" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="magnificat" target="11" />
+      <module name="magnificat (1)" target="11" />
+      <module name="magnificat (2)" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
