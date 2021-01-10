@@ -8,3 +8,7 @@ WINDOWS:
 
 jpackage --name Magnificat --input temp --main-jar magnificat-1.0-SNAPSHOT.jar --win-shortcut --win-menu --icon magnificat.ico --copyright "marcfearby.com 2021, GPL-3.0 License" --vendor "marcfearby.com" --description "Magnificent cataloguing app for classical music enthusiasts" --app-version 0.1
 
+
+MAC:
+
+jpackage --name Magnificat --input temp --main-jar magnificat-1.0-SNAPSHOT.jar --icon magnificat.icns --copyright "marcfearby.com 2021, GPL-3.0 License" --vendor "marcfearby.com" --description "Magnificent cataloguing app for classical music enthusiasts" --app-version 1.0 --mac-package-identifier Magnificat --mac-package-name Magnificat

@@ -64,7 +64,7 @@ public class WindowController implements Initializable {
         // Although I can still use getClass().getResourceAsStream() elsewhere but not here?! Weird.
         primaryStage.getIcons().add(new Image(App.class.getResourceAsStream("/icons/magnificat.png")));
 
-        setupMenus();
+//        setupMenus();
 
         // Show window after X/Y coordinates have been set (otherwise the user will see it move)
         primaryStage.show();
@@ -113,22 +113,23 @@ public class WindowController implements Initializable {
     }
 
     // TODO Add menus for all operating systems eventually (for now, just add Magnificat->Quit for macOS)
-    private void setupMenus() {
-        String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-
-        if (os.contains("mac") || os.contains("darwin")) {
-            Menu menu = new Menu("Magnificat");
-            MenuItem quit = new MenuItem("Quit");
-            quit.setOnAction(e -> Platform.exit());
-            quit.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.META_DOWN));
-            menu.getItems().add(quit);
-
-            MenuBar menuBar = new MenuBar(menu);
-            menuBar.setUseSystemMenuBar(true);
-
-            BorderPane root = (BorderPane)primaryStage.getScene().getRoot();
-            root.setBottom(menuBar); // I'm not using the bottom region. If I do one day, then this will break!
-        }
-    }
+    // Turns out I didn't need this since jpackage takes care of the main App->Quit menu :-)
+//    private void setupMenus() {
+//        String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+//
+//        if (os.contains("mac") || os.contains("darwin")) {
+//            Menu menu = new Menu("Magnificat");
+//            MenuItem quit = new MenuItem("Quit");
+//            quit.setOnAction(e -> Platform.exit());
+//            quit.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.META_DOWN));
+//            menu.getItems().add(quit);
+//
+//            MenuBar menuBar = new MenuBar(menu);
+//            menuBar.setUseSystemMenuBar(true);
+//
+//            BorderPane root = (BorderPane)primaryStage.getScene().getRoot();
+//            root.setBottom(menuBar); // I'm not using the bottom region. If I do one day, then this will break!
+//        }
+//    }
 
 }
