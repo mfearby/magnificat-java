@@ -212,7 +212,7 @@ public class FilesTableController implements Initializable, PlaylistProvider {
         // Get the index of the current track (respective of the current sort in the TableView)
         int currentIndex = items.indexOf(currentTrack);
         int nextIndex = currentIndex + 1 < items.size() ? ++currentIndex : currentIndex;
-        String previousTrackName = currentTrack.getPath().getFileName().toString();
+        String previousTrackName = currentTrack == null ? "" : currentTrack.getPath().getFileName().toString();
         currentTrack = items.get(nextIndex);
 
         // If the current track is the next track again, then we've reached the end of this directory
