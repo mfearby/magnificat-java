@@ -119,6 +119,10 @@ public class PlayerController implements Initializable, PlayerHandler {
 
     @FXML
     private void stopPlaying(ActionEvent event) {
+        doStopPlaying();
+    }
+
+    private void doStopPlaying() {
         if (mp == null) return;
         mp.stop();
         setPlayingIcon(false);
@@ -158,7 +162,12 @@ public class PlayerController implements Initializable, PlayerHandler {
 
     private void playNext() {
         TrackInfo track = getPlaylistProvider().getNextTrack();
-        playTrack(track);
+        if (track == null) {
+            currentTrack = null;
+            doStopPlaying();
+        } else {
+            playTrack(track);
+        }
     }
 
 
