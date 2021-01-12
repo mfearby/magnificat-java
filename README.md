@@ -1,10 +1,11 @@
 # Magnificat
-Magnificat will become a magnificent cataloguing app for classical music enthusiasts with large CD collections to organise. Version 0.1 is close to completion; here's what it looks like so far:
+Magnificat will become a magnificent cataloguing app for classical music enthusiasts with large CD collections to organise. Version 1.0 has now been released and you can [download installers for Windows and Mac here](https://github.com/mfearby/magnificat/releases/tag/v1.0). 
+
+The name "Magnificat" is a play on the first line of the popular sacred choral work which begins "Magnificat anima mea Dominum" (which is typically [translated](https://en.wikipedia.org/wiki/Magnificat#Latin_and_Anglican_translation) into English as "My soul doth magnify the Lord"). It lends itself well to what I hope might one day be a magnificent cataloguing app, and my cat ("Peanut") is magnificent as well ;-)
+
+It is a cross-platform Java/JavaFX 15 application for which I use [IntelliJ IDEA](https://www.jetbrains.com/idea/) to edit/test/debug before releasing it. I may get around to making an Ubuntu Linux package in the not-too-distant future, as well.
 
 ![Screenshot of version 1.0](screenshot.png)
-
-There are no installers yet, but they are coming soon (right now you need to be a programming enthusiast to check out Magnificat and test it).
-
 
 ## Project Roadmap
 
