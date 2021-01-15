@@ -122,7 +122,6 @@ public class FolderTreeController {
      * Handle the expand and collapse events for TreeView nodes
      * @param event The TreeItem.TreeModificationEvent object
      */
-    @SuppressWarnings("unchecked")
     private void branchToggled(TreeItem.TreeModificationEvent event)
     {
         // Warning suppression added for this unchecked cast

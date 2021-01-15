@@ -11,8 +11,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="magnificat" target="11" />
-      <module name="magnificat (1)" target="11" />
-      <module name="magnificat (2)" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

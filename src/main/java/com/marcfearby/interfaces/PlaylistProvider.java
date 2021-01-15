@@ -27,4 +27,10 @@ public interface PlaylistProvider {
      */
     TrackInfo getRandomTrack();
 
+
+    /**
+     * Get the first track in the playlist (used by "repeat" functionality to start again)
+     * @return Path to the first track in the directory
+     */
+    TrackInfo getFirstTrack();
 }

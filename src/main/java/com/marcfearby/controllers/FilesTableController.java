@@ -217,10 +217,23 @@ public class FilesTableController implements Initializable, PlaylistProvider {
 
         // If the current track is the next track again, then we've reached the end of this directory
         if (previousTrackName.equals(currentTrack.getPath().getFileName().toString())) {
+            currentTrack.setPlaying(-1);
             return null;
         }
 
         saveCurrentTrack(currentTrack);
+        return currentTrack;
+    }
+
+
+    @Override
+    public TrackInfo getFirstTrack() {
+        ObservableList<TrackInfo> items = table.getItems();
+
+        if (items.isEmpty())
+            return null;
+
+        currentTrack = items.get(0);
         return currentTrack;
     }
 

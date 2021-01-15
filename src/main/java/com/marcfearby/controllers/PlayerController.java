@@ -6,7 +6,6 @@ import com.marcfearby.interfaces.TabPaneHandler;
 import com.marcfearby.models.AppSettings;
 import com.marcfearby.models.TrackInfo;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -44,7 +43,7 @@ public class PlayerController implements Initializable, PlayerHandler {
     private boolean audible = false;
     private MediaPlayer mp;
     private Duration duration;
-    private boolean repeat = false;
+    private boolean repeat = false; // TODO link this to a toggle button
     private boolean atEndOfMedia = false;
     private double volumeBeforeMuted = 1.0;
     private double currentVolume = 1.0;
@@ -87,18 +86,6 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
-    private void setCurrentVolume(Double volume) {
-        this.currentVolume = volume;
-        volumeSlider.setValue(volume * 100); // this doesn't cause an endless loop
-
-        if (mp != null)
-            mp.setVolume(currentVolume);
-
-        setAudibleIcon(currentVolume > 0);
-        saveSettings();
-    }
-
-
     @FXML
     public void timeSliderMouseClicked(MouseEvent event) {
         handleSliderClickEvent(event, timeSlider);
@@ -112,26 +99,70 @@ public class PlayerController implements Initializable, PlayerHandler {
 
 
     @FXML
-    public void togglePlayback(ActionEvent event) {
+    public void togglePlayback() {
         togglePlayPause();
     }
 
 
     @FXML
-    private void stopPlaying(ActionEvent event) {
+    public void stopPlaying() {
         doStopPlaying();
-    }
-
-    private void doStopPlaying() {
-        if (mp == null) return;
-        mp.stop();
-        setPlayingIcon(false);
-        if (currentTrack != null) currentTrack.setPlaying(-1);
     }
 
 
     @FXML
-    public void toggleSound(ActionEvent event) {
+    public void goBack() {
+        // This is simpler than goForward() because I'm not allowing this method to go to the previous folder, and the user
+        // also can't play in reverse order. (if they want to play in reverse, they have to sort tracks accordingly and just play forward in the usual manner).
+        TrackInfo track = getPlaylistProvider().getPreviousTrack();
+        playNewTrack(track);
+    }
+
+
+    @FXML
+    public void goForward() {
+        doPlayNext(false);
+    }
+
+
+    @Override
+    public void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying) {
+        this.playlistProvider = playlistProvider;
+
+        if (startPlaying)
+            doPlayNext(false);
+    }
+
+
+    @Override
+    public void togglePlayPause() {
+        // Most likely the user has just started the app, pressed Play, and didn't double-click on a track...
+        // Or, the end of the playlist has been reached and 'repeat' is false, so start again from the beginning again.
+        if (mp == null) {
+            doPlayNext(true);
+            return;
+        }
+
+        Status status = mp.getStatus();
+        if (status == Status.UNKNOWN  || status == Status.HALTED) {
+            return;
+        }
+
+        if (status == Status.PAUSED || status == Status.READY || status == Status.STOPPED) {
+            // rewind the track if we're sitting at the end
+            if (atEndOfMedia) {
+                mp.seek(mp.getStartTime());
+                atEndOfMedia = false;
+            }
+            mp.play();
+        } else {
+            mp.pause();
+        }
+    }
+
+
+    @FXML
+    public void toggleSound() {
         this.setAudibleIcon(!audible);
 
         if (currentVolume > 0)
@@ -147,67 +178,92 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
-    @FXML
-    public void goBack(ActionEvent event) {
-        TrackInfo track = getPlaylistProvider().getPreviousTrack();
-        playTrack(track);
-    }
 
 
-    @FXML
-    public void goForward(ActionEvent event) {
-        playNext();
-    }
+
+    ////////////////////
+    // INTERNAL LOGIC //
+    ////////////////////
 
 
-    private void playNext() {
+    private void doPlayNext(boolean forceRepeat) {
         TrackInfo track = getPlaylistProvider().getNextTrack();
+
+        if (track == null && repeat || forceRepeat) {
+            track = getPlaylistProvider().getFirstTrack();
+        }
+
         if (track == null) {
-            currentTrack = null;
             doStopPlaying();
         } else {
-            playTrack(track);
+            playNewTrack(track);
         }
     }
 
 
-    @Override
-    public void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying) {
-        this.playlistProvider = playlistProvider;
 
-        if (startPlaying)
-            playNext();
-    }
+    /**
+     * Start playing a new track (and stop playing the previous one, if any)
+     * @param track The TrackInfo object for the new track to be played
+     */
+    private void playNewTrack(TrackInfo track) {
+        // Kill the previous object if a track is currently playing/paused
+        if (mp != null)
+            mp.dispose();
 
+        if (currentTrack != null)
+            currentTrack.setPlaying(-1);
 
-    @Override
-    public void togglePlayPause() {
-        // Most likely the user just started the app, pressed Play, and didn't double-click on a track
-        if (mp == null) {
-            playNext();
-            return;
-        }
+        currentTrack = track;
+        currentTrack.setPlaying(1);
 
-        Status status = mp.getStatus();
-        if (status == Status.UNKNOWN  || status == Status.HALTED) {
-            return;
-        }
+        Path path = currentTrack.getPath();
+        Media media = new Media(path.toUri().toString());
+        mp = new MediaPlayer(media);
 
-        if (status == Status.PAUSED || status == Status.READY || status == Status.STOPPED) {
-            // rewind the track if we're sitting at the end
-            if (atEndOfMedia) {
-                mp.seek(mp.getStartTime());
-                atEndOfMedia = false;
+        mp.setOnPlaying(() -> setPlayingIcon(true));
+        mp.setOnPaused(() -> setPlayingIcon(false));
+        mp.setOnStopped(this::doStopPlaying);
+
+        mp.play();
+        atEndOfMedia = false;
+        // Use the existing volume level for the new player object!
+        mp.setVolume(currentVolume);
+
+        String name = path.getFileName().toString();
+        if (name.indexOf(".") > 0) name = name.substring(0, name.lastIndexOf("."));
+        trackTitle.setText(name);
+
+        mp.currentTimeProperty().addListener(ov -> updateDurationValues());
+
+        mp.setOnReady(() -> {
+            duration = mp.getMedia().getDuration();
+            updateDurationValues();
+        });
+
+        mp.setCycleCount(repeat ? MediaPlayer.INDEFINITE : 1);
+
+        mp.setOnEndOfMedia(() -> {
+            if (!repeat) {
+                atEndOfMedia = true;
             }
+            doPlayNext(false);
+        });
+    }
 
-            mp.play();
-            this.setPlayingIcon(true);
-            if (currentTrack != null) currentTrack.setPlaying(1);
-        } else {
-            mp.pause();
-            this.setPlayingIcon(false);
-            if (currentTrack != null) currentTrack.setPlaying(0);
+
+    private void doStopPlaying() {
+        if (mp != null) {
+            mp.stop();
+            mp.dispose();
+            mp = null;
         }
+        // remove playing icon from first table column
+        if (currentTrack != null) currentTrack.setPlaying(-1);
+        currentTrack = null;
+        trackTitle.setText("Magnificat");
+        timeSlider.setValue(0);
+        setPlayingIcon(false);
     }
 
 
@@ -225,50 +281,24 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
-    /**
-     * Start playing the file from 'currentTrack' (and stop playing the previous one, if any)
-     * @param track The TrackInfo object for the new track to be played
-     */
-    private void playTrack(TrackInfo track) {
-        // Kill the previous object if a track is currently playing/paused
+    private void setCurrentVolume(Double volume) {
+        this.currentVolume = volume;
+        volumeSlider.setValue(volume * 100); // this doesn't cause an endless loop
+
         if (mp != null)
-            mp.dispose();
+            mp.setVolume(currentVolume);
 
-        if (currentTrack != null)
-            currentTrack.setPlaying(-1);
-
-        currentTrack = track;
-        currentTrack.setPlaying(1);
-
-        Path path = currentTrack.getPath();
-        Media media = new Media(path.toUri().toString());
-        mp = new MediaPlayer(media);
-
-        mp.play();
-        setPlayingIcon(true);
-        // Use the existing volume level for the new player object!
-        mp.setVolume(currentVolume);
-
-        String name = path.getFileName().toString();
-        if (name.indexOf(".") > 0) name = name.substring(0, name.lastIndexOf("."));
-        trackTitle.setText(name);
-
-        mp.currentTimeProperty().addListener(ov -> updateValues());
-
-        mp.setOnReady(() -> {
-            duration = mp.getMedia().getDuration();
-            updateValues();
-        });
-
-        mp.setCycleCount(repeat ? MediaPlayer.INDEFINITE : 1);
-
-        mp.setOnEndOfMedia(() -> {
-            if (!repeat) {
-                atEndOfMedia = true;
-            }
-            playNext();
-        });
+        setAudibleIcon(currentVolume > 0);
+        saveSettings();
     }
+
+
+
+
+
+    /////////////////////////////////////////
+    // UPDATE INTERFACE LABELS AND BUTTONS //
+    /////////////////////////////////////////
 
 
     /**
@@ -280,6 +310,10 @@ public class PlayerController implements Initializable, PlayerHandler {
         // Icon displayed should be opposite (if playing, then show pause, and vice versa)
         Image img = playing ? pauseImage : playImage;
         playPauseButton.setGraphic(new ImageView(img));
+        if (currentTrack != null) {
+            int status = playing ? 1 : 0;
+            currentTrack.setPlaying(status);
+        }
     }
 
 
@@ -297,9 +331,17 @@ public class PlayerController implements Initializable, PlayerHandler {
     /**
      * Update the time/progress slider according to current values from the MediaPlayer
      */
-    private void updateValues() {
+    private void updateDurationValues() {
         Platform.runLater(() -> {
-            Duration currentTime = mp.getCurrentTime();
+            Duration currentTime = Duration.ZERO;
+
+            // If the player has stopped entirely, set the duration to zero
+            if (mp == null) {
+                duration = Duration.ZERO;
+            } else {
+                currentTime = mp.getCurrentTime();
+            }
+
             timeSlider.setDisable(duration.isUnknown());
             updateLabels(currentTime, duration);
 
@@ -368,9 +410,12 @@ public class PlayerController implements Initializable, PlayerHandler {
 
 
 
+
+
     private Timer timer = null;
     private TimerTask task = null;
 
+    // This is debounced to prevent the slider from saving lots of times as it moves
     private void saveSettings() {
         cancelTimer();
         timer = new Timer();
