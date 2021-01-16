@@ -61,7 +61,7 @@ public class FolderTreeController {
 
                     MenuItem m = new MenuItem("Refresh", new ImageView(refreshImage));
                     m.setOnAction(event -> {
-                        FileTreeItem fi = (FileTreeItem) getTreeItem();
+                        FileTreeItem<Path> fi = (FileTreeItem<Path>) getTreeItem();
                         fi.refresh();
                     });
 

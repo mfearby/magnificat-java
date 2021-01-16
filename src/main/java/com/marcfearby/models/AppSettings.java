@@ -15,9 +15,10 @@ public class AppSettings {
     static {
         try {
             String settings = Settings.getInstance().getAppSettings();
+            if (settings == null) settings = "";
             instance = new AppSettings(settings);
         } catch(Exception e) {
-            throw new RuntimeException("Exception occured whilst creating the 'AppSettings' singleton instance.");
+            throw new RuntimeException("Exception occured whilst creating the 'AppSettings' singleton instance. " + e.toString());
         }
     }
 
@@ -66,11 +67,10 @@ public class AppSettings {
                 Double h = Helper.getDoubleOrZero(ini.get(KEY_SECTION_MAIN, KEY_HEIGHT));
                 if (h > 0) windowHeight = h;
 
-                Double v = Helper.getDoubleOrZero(ini.get(KEY_SECTION_MAIN, KEY_VOLUME));
-                volume = v; // the user might want a volume of 0 to mute it!
+                // the user might want a volume of 0 to mute it!
+                volume = Helper.getDoubleOrZero(ini.get(KEY_SECTION_MAIN, KEY_VOLUME));
 
-                Double m = Helper.getDoubleOrZero(ini.get(KEY_SECTION_MAIN, KEY_VOLUME_BEFORE_MUTE));
-                volumeBeforeMute = m;
+                volumeBeforeMute = Helper.getDoubleOrZero(ini.get(KEY_SECTION_MAIN, KEY_VOLUME_BEFORE_MUTE));
 
             } catch (Exception e) {
                 System.out.println("AppSettings(String settings): " + e);
