@@ -7,6 +7,7 @@ import com.marcfearby.models.TrackInfo;
 import com.marcfearby.utils.Global;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -156,6 +157,22 @@ public class FilesTableControllerTest extends ApplicationTest {
         String expected = Testing.TESTING_MUSIC_FILE_HAYDN;
         Path next = ctrl.getNextTrack().getPath(); // Next track should be Haydn (not Tchaikovsky!)
         assertEquals(expected, next.toString());
+    }
+
+
+    @Test
+    public void test_playing_status_icon() {
+        doubleClickOn("Haydn");
+        TrackInfo track = ctrl.getNextTrack();
+        track.setPlaying(1);
+
+        int index = table.getSelectionModel().getFocusedIndex();
+        TableColumn<Path, ?> firstColumn = table.getColumns().get(0);
+        Object cellValue = firstColumn.getCellObservableValue(index).getValue();
+
+        // Not sure about the usefulness of this test because I this doesn't check the image itself (yet)
+        String stringValue = (cellValue == null) ? "null" : cellValue.toString();
+        assertEquals("1", stringValue);
     }
 
 }
