@@ -15,4 +15,11 @@ public interface PlayerHandler {
      */
     void togglePlayPause();
 
+
+    /**
+     * Get the current position of the playing track (to save to tabs.ini before application exits)
+     * @return The time index of the current track (or 0.0 if none)
+     */
+    int getTrackPosition();
+
 }

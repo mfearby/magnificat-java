@@ -73,7 +73,7 @@ public class TabPaneController implements TabPaneHandler {
                     event.consume();
                 } else {
                     infos.remove(info);
-                    saveTabInfos(null);
+                    saveTabInfos();
                 }
             });
 
@@ -108,9 +108,10 @@ public class TabPaneController implements TabPaneHandler {
 
 
     @Override
-    public void saveTabInfos(TabInfo updateTab) {
+    public void saveTabInfos() {
         // Don't save whilst the app is initialising (and triggering tab onSelectionChanged events)
         if (tabsLoaded) {
+            activeTabController.updateTrackPositionBeforeExit();
             Settings.getInstance().saveTabs(infos);
         }
     }

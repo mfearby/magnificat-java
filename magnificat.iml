@@ -84,5 +84,6 @@
     <orderEntry type="library" name="Maven: org.apache.maven.plugins:maven-antrun-plugin:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant:1.9.14" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.9.14" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>

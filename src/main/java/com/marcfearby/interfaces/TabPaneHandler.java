@@ -9,7 +9,7 @@ public interface TabPaneHandler {
 
     void addTab(Path path, boolean becomePlaylistProvider);
 
-    void saveTabInfos(TabInfo updateTab);
+    void saveTabInfos();
 
 
     /**

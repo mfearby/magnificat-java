@@ -18,7 +18,8 @@ public class TrackInfo {
     private final StringProperty tracknumof = new SimpleStringProperty();
     private final StringProperty time = new SimpleStringProperty();
 
-    private long totalSeconds = -1;
+    // used to remember the position of a tab's currently-playing track
+    private final IntegerProperty startPlayingAtSeconds = new SimpleIntegerProperty(0);
 
     public TrackInfo(Path path) {
         this.path = path;
@@ -67,6 +68,10 @@ public class TrackInfo {
         return time;
     }
 
+    public IntegerProperty startPlayingAtSeconds() {
+        return startPlayingAtSeconds;
+    }
+
 
     private void addMp3TagInformation(Path path) {
         if (path.toString().isEmpty())
@@ -76,7 +81,7 @@ public class TrackInfo {
             // Opening the file using its Path instead of passing a string makes it compatible with my test cases
             Mp3File mp3file  = new Mp3File(path);
 
-            this.totalSeconds = mp3file.getLengthInSeconds();
+            long totalSeconds = mp3file.getLengthInSeconds();
             String formattedLength = String.format("%d:%02d", totalSeconds / 60, totalSeconds % 60);
             this.time.set(formattedLength);
 

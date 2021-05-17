@@ -22,4 +22,12 @@ abstract public class AbstractTabController {
      */
     abstract void setTabColoured(boolean coloured);
 
+
+    /**
+     * Tell the tab controller to update the TabInfo object with the current track position.
+     * TabPaneController.saveTabInfos() is called when the application exits, and it will
+     * call this method before finally saving tabs.ini
+     */
+    abstract void updateTrackPositionBeforeExit();
+
 }

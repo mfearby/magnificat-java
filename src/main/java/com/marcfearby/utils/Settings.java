@@ -47,6 +47,7 @@ public class Settings {
     private static final String KEY_PLAYLIST_PROVIDER = "playlistprovider";
     private static final String KEY_DIV_1 = "div1";
     private static final String KEY_CURRENT_TRACK = "track";
+    private static final String KEY_TRACK_POSITION = "position";
 
     private boolean testMode;
     private String testAppSettings;
@@ -145,6 +146,9 @@ public class Settings {
                         if (currentTrack != null) {
                             Path currentTrackPath = selected.resolve(currentTrack);
                             info.setCurrentTrack(currentTrackPath);
+
+                            int lastPosition = Helper.getIntegerOrZero(ini.get(section, KEY_TRACK_POSITION));
+                            info.setTrackPosition(lastPosition);
                         }
                     }
 
@@ -210,6 +214,7 @@ public class Settings {
                 ini.put(section, KEY_EXPANDED_PATH, info.getExpanded());
                 ini.put(section, KEY_PLAYLIST_PROVIDER, info.getIsPlaylistProvider());
                 ini.put(section, KEY_DIV_1, info.getDiv1Position());
+                ini.put(section, KEY_TRACK_POSITION, info.getTrackPosition());
 
                 String currentTrack = "";
                 if (info.getCurrentTrack() != null) currentTrack = info.getCurrentTrack().getFileName().toString();

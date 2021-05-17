@@ -61,13 +61,17 @@ public class PlainTabControllerTest  extends ApplicationTest {
             }
             @Override
             public void togglePlayPause() { }
+            @Override
+            public int getTrackPosition() {
+                return 0;
+            }
         }
 
         class DummyTabPane implements TabPaneHandler {
             @Override
             public void addTab(Path path, boolean becomePlaylistProvider) { }
             @Override
-            public void saveTabInfos(TabInfo updateTab) { }
+            public void saveTabInfos() { }
             @Override
             public void activatePlaylistProvider() { }
             @Override

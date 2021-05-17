@@ -178,6 +178,11 @@ public class PlayerController implements Initializable, PlayerHandler {
     }
 
 
+    public int getTrackPosition() {
+        if (mp == null) return 0;
+        Duration currentTime = mp.getCurrentTime();
+        return (int)Math.floor(currentTime.toSeconds());
+    }
 
 
 
@@ -225,7 +230,18 @@ public class PlayerController implements Initializable, PlayerHandler {
         mp.setOnPaused(() -> setPlayingIcon(false));
         mp.setOnStopped(this::doStopPlaying);
 
+        int seconds = track.startPlayingAtSeconds().getValue();
+        if (seconds > 0) {
+            track.startPlayingAtSeconds().setValue(0);
+            // Begin playback at this point; I had no luck with various attempts at mp.seek() here.
+            mp.setStartTime(Duration.seconds(seconds));
+        }
+
         mp.play();
+
+        // Clear the start time or else the user won't be able to move the slider before this point
+        mp.setOnPlaying(() -> mp.setStartTime(Duration.ZERO));
+
         atEndOfMedia = false;
         // Use the existing volume level for the new player object!
         mp.setVolume(currentVolume);

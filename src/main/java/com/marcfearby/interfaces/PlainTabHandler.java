@@ -24,7 +24,6 @@ public interface PlainTabHandler {
      */
     void becomePlaylistProvider(boolean startPlaying);
 
-
     /**
      * Pass on an instruction to the PlayerHander that playback state should be toggled
      */
@@ -32,4 +31,5 @@ public interface PlainTabHandler {
 
 
     void saveCurrentTrack(Path track);
+
 }

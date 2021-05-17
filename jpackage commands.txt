@@ -1,12 +1,26 @@
+To build a big, fat JAR file (which should be c. 23 MB in size!), run the following
+from a terminal (in IntelliJ IDEA or whereever):
+
+"mvn clean package"  (this will do a build and run all the unit tests as well!)
+
+
+DON'T RUN THE "jar:jar" MAVEN PLUGIN: IT'S USELESS!
+
+
+
 Create a "target\temp" directory
 Copy magnificat.ico into the root of "target"
-Move magnificat-1.0-SNAPSHOT.jar into that directory
+Move magnificat-1.0-SNAPSHOT.jar into the temp directory
 
 then, from the "target" directory, run this command...
 
+YOU MUST INCREMENT THE VERSION NUMBER EACH TIME YOU CREATE AN INSTALLER
+OR ELSE THE RESULTING INSTALLER WILL HANG AND DO NOTHING!
+
+
 WINDOWS:
 
-jpackage --name Magnificat --input temp --main-jar magnificat-1.0-SNAPSHOT.jar --win-shortcut --win-menu --icon magnificat.ico --copyright "marcfearby.com 2021, GPL-3.0 License" --vendor "marcfearby.com" --description "Magnificent cataloguing app for classical music enthusiasts" --app-version 1.0
+jpackage --name Magnificat --input temp --main-jar magnificat-1.0-SNAPSHOT.jar --win-shortcut --win-menu --icon magnificat.ico --copyright "marcfearby.com 2021, GPL-3.0 License" --vendor "marcfearby.com" --description "Magnificent cataloguing app for classical music enthusiasts" --app-version 1.0 --win-upgrade-uuid "2ef5bf3c-af89-11eb-8529-0242ac130003"
 
 
 MAC:

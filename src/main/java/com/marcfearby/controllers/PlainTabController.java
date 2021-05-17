@@ -70,7 +70,8 @@ public class PlainTabController extends AbstractTabController implements FolderT
         if (info.getIsPlaylistProvider()) {
             Path restoreTrack = info.getCurrentTrack();
             if (restoreTrack != null) {
-                tableController.restoreCurrentTrack(restoreTrack);
+                // Remember the previously-playing track and its position
+                tableController.restoreCurrentTrack(restoreTrack, info.getTrackPosition());
             } else {
                 becomePlaylistProvider(false);
             }
@@ -150,6 +151,13 @@ public class PlainTabController extends AbstractTabController implements FolderT
     }
 
 
+    @Override
+    public void updateTrackPositionBeforeExit() {
+        int seconds = playerHandler.getTrackPosition();
+        info.setTrackPosition(seconds);
+    }
+
+
     /**
      * Add the class only if it isn't applied already (or else it'll
      * be added multiple times and will appear buggy to the user!)
@@ -177,7 +185,7 @@ public class PlainTabController extends AbstractTabController implements FolderT
      * Save all the information about this tab to the settings file
      */
     private void saveTabInfos() {
-        tabPaneHandler.saveTabInfos(info);
+        tabPaneHandler.saveTabInfos();
     }
 
 

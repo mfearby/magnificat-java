@@ -17,6 +17,7 @@ public class TabInfo {
     private AbstractTabController controller = null;
     private Double div1Position = 0.25;
     private Path currentTrack = null;
+    private int trackPosition = 0; // seconds
 
 
     public TabInfo(TabType type, Path root, boolean active) {
@@ -48,7 +49,7 @@ public class TabInfo {
 
 
     public boolean getActive() {
-        return active;
+        return this.active;
     }
     public void setActive(boolean active) {
         this.active = active;
@@ -80,7 +81,7 @@ public class TabInfo {
 
 
     public Double getDiv1Position() {
-        return div1Position;
+        return this.div1Position;
     }
     public void setDiv1Position(Double div1Position) {
         this.div1Position = div1Position;
@@ -88,7 +89,7 @@ public class TabInfo {
 
 
     public Path getCurrentTrack() {
-        return currentTrack;
+        return this.currentTrack;
     }
 
     public void setCurrentTrack(Path currentTrack) {
@@ -96,4 +97,11 @@ public class TabInfo {
     }
 
 
+    public int getTrackPosition() {
+        return trackPosition;
+    }
+
+    public void setTrackPosition(int position) {
+        this.trackPosition = position;
+    }
 }

@@ -69,6 +69,10 @@ public class TabPaneControllerTest extends ApplicationTest {
             public void setPlaylistProvider(PlaylistProvider playlistProvider, boolean startPlaying) { }
             @Override
             public void togglePlayPause() { }
+            @Override
+            public int getTrackPosition() {
+                return 0;
+            }
         }
 
         ctrl.init(new DummyHandler());

@@ -76,6 +76,10 @@ public class WindowController implements Initializable {
         primaryStage.heightProperty().addListener(listener);
         primaryStage.xProperty().addListener(listener);
         primaryStage.yProperty().addListener(listener);
+
+        primaryStage.setOnCloseRequest(windowEvent -> {
+            tabsController.saveTabInfos();
+        });
     }
 
 

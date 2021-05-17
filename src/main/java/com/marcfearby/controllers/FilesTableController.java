@@ -69,12 +69,13 @@ public class FilesTableController implements Initializable, PlaylistProvider {
     }
 
 
-    public void restoreCurrentTrack(Path path) {
+    public void restoreCurrentTrack(Path path, int trackPosition) {
         try {
             List<TrackInfo> items = table.getItems();
             // Find the matching TrackInfo object in the table and start playing it again
             for (TrackInfo item : items) {
                 if (item.getPath().toString().equals(path.toString())) {
+                    item.startPlayingAtSeconds().setValue(trackPosition);
                     setCurrentTrackAndPlay(item);
                     break;
                 }
