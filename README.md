@@ -1,5 +1,7 @@
 # Magnificat
-Magnificat will become a magnificent cataloguing app for classical music enthusiasts with large CD collections to organise. Version 1.0 has now been released and you can [download installers for Windows and Mac here](https://github.com/mfearby/magnificat/releases/tag/v1.0). 
+Magnificat may one day become a magnificent cataloguing app for classical music enthusiasts with large CD collections to organise. Version 1.0 has now been released and you can [download installers for Windows and Mac here](https://github.com/mfearby/magnificat/releases/tag/v1.0). 
+
+I think it's time to restart Magnificat (again!) as a Kotlin project. Java doesn't do anything for me anymore, and since my new job is mostly Kotlin/React, then it makes sense for me to be tinkering at home in Kotlin instead of trying to motivate myself to touch Java again.
 
 The name "Magnificat" is a play on the first line of the popular sacred choral work which begins "Magnificat anima mea Dominum" (which is typically [translated](https://en.wikipedia.org/wiki/Magnificat#Latin_and_Anglican_translation) into English as "My soul doth magnify the Lord"). It lends itself well to what I hope might one day be a magnificent cataloguing app, and my cat ("Peanut") is magnificent as well ;-)
 
