@@ -1,7 +1,11 @@
 # Magnificat
-Magnificat may one day become a magnificent cataloguing app for classical music enthusiasts with large CD collections to organise. Version 1.0 has now been released and you can [download installers for Windows and Mac here](https://github.com/mfearby/magnificat/releases/tag/v1.0). 
+Magnificat (Java) was the second incarnation of this program, which has been very much a side project over the years (or my "white whale", LOL). I will soon be rewriting it - again - in Kotlin since Java syntax is so... unpleasant. I've been using Kotlin in my new job since August 2021, and it is so much nicer.
 
-I think it's time to restart Magnificat (again!) as a Kotlin project. Java doesn't do anything for me anymore, and since my new job is mostly Kotlin/React, then it makes sense for me to be tinkering at home in Kotlin instead of trying to motivate myself to touch Java again.
+All this program does is allow you to brows your file system in multiple tabs, play music, and remember which track (and tab) was playing when you reopen the program.
+
+### Here is the readme as it was before I switched to Kotlin:
+
+Magnificat may one day become a magnificent cataloguing app for classical music enthusiasts with large CD collections to organise. Version 1.0 has now been released and you can [download installers for Windows and Mac here](https://github.com/mfearby/magnificat/releases/tag/v1.0). 
 
 The name "Magnificat" is a play on the first line of the popular sacred choral work which begins "Magnificat anima mea Dominum" (which is typically [translated](https://en.wikipedia.org/wiki/Magnificat#Latin_and_Anglican_translation) into English as "My soul doth magnify the Lord"). It lends itself well to what I hope might one day be a magnificent cataloguing app, and my cat ("Peanut") is magnificent as well ;-)
 
